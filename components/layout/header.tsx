@@ -10,6 +10,8 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
@@ -88,13 +90,21 @@ export default function Header() {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user.name}</p>
+                      {/* Optional: Add email if needed */}
+                      {/* <p className="text-xs leading-none text-muted-foreground">{user.email}</p> */}
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href={`/profile/${user.$id}`} className="cursor-pointer flex w-full">
+                    <Link href={`/profile/${user.$id}`} className="cursor-pointer flex w-full items-center">
                       <User className="mr-2 h-4 w-4" />
                       Profile
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={logout} className="cursor-pointer">
+                  <DropdownMenuItem onClick={logout} className="cursor-pointer flex items-center">
                     <LogOut className="mr-2 h-4 w-4" />
                     Log Out
                   </DropdownMenuItem>
@@ -140,13 +150,19 @@ export default function Header() {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
+                 <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user.name}</p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href={`/profile/${user.$id}`} className="cursor-pointer flex w-full">
+                    <Link href={`/profile/${user.$id}`} className="cursor-pointer flex w-full items-center">
                       <User className="mr-2 h-4 w-4" />
                       Profile
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={logout} className="cursor-pointer">
+                  <DropdownMenuItem onClick={logout} className="cursor-pointer flex items-center">
                     <LogOut className="mr-2 h-4 w-4" />
                     Log Out
                   </DropdownMenuItem>
@@ -178,10 +194,9 @@ export default function Header() {
             </Link>
 
             {user ? (
+              // Removed the username display from here
               <div className="pt-3 border-t border-gray-100 mt-2">
-                <div className="flex items-center gap-3 py-2">
-                  <span className="font-medium">{user.name}</span>
-                </div>
+                {/* Placeholder div to maintain structure if needed, or remove entirely */}
               </div>
             ) : (
               <div className="flex flex-col gap-3 pt-3">
