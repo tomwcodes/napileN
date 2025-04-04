@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <h3 className="text-lg font-semibold mb-4">Verse</h3>
-            <p className="text-muted-foreground">A minimalist platform for publishing and reading poems and stories.</p>
+            <p className="text-muted-foreground">The platform for publishing and discovering poetry and stories.</p>
           </div>
 
           <div>
