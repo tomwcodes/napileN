@@ -17,7 +17,7 @@ export default function ContentDetail({ content }: ContentDetailProps) {
 
       <div className="flex items-center gap-2 text-muted-foreground">
         <Link href={`/profile/${content.author.username}`} className="font-medium text-foreground">
-          By {content.author.name}
+          {content.author.name}
         </Link>
         <span className="text-sm">{new Date(content.createdAt).toLocaleDateString()}</span>
       </div>
@@ -28,4 +28,3 @@ export default function ContentDetail({ content }: ContentDetailProps) {
     </article>
   )
 }
-
