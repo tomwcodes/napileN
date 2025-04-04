@@ -17,7 +17,7 @@ export default async function StoriesPage() {
           <p className="text-muted-foreground mt-2">Discover short stories from talented writers</p>
           <div className="mt-4">
             <Link href="/write">
-              <Button className="text-white bg-red-600 px-4 py-2 rounded">Publish Story</Button>
+              <Button className="text-white bg-red-900 px-4 py-2 rounded hover:bg-red-950 transition-colors">Publish Story</Button>
             </Link>
           </div>
         </div>

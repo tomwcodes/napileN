@@ -81,7 +81,7 @@ export default function CommentSection({ contentId }: CommentSectionProps) {
           />
 
           <div>
-            <button type="submit" className="bg-red-700 text-white px-4 py-2 rounded">
+            <button type="submit" className="bg-red-900 text-white px-4 py-2 rounded hover:bg-red-950 transition-colors">
               Post Comment
             </button>
           </div>
