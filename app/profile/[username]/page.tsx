@@ -5,6 +5,7 @@ import { notFound, useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context" // Import useAuth
 import { getUserContent } from "@/lib/data" // Now updated to use Appwrite
 import ContentList from "@/components/content/content-list"
+import PublishedWorksList from "@/components/profile/published-works-list"
 import UserProfile from "@/components/profile/user-profile"
 import { Skeleton } from "@/components/ui/skeleton" // For loading state
 import type { Content } from "@/lib/types"
@@ -129,13 +130,13 @@ export default function ProfilePage({ params }: ProfilePageProps) {
       <div className="border-t border-border pt-8">
         <h2 className="mb-6">Published Works</h2>
         {contentLoading ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <Skeleton className="h-40 w-full" />
-            <Skeleton className="h-40 w-full" />
-            <Skeleton className="h-40 w-full" />
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
           </div>
         ) : userContent.length > 0 ? (
-          <ContentList items={userContent} type="all" />
+          <PublishedWorksList items={userContent} />
         ) : (
           <p className="text-muted-foreground">No published works yet.</p>
         )}
