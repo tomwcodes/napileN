@@ -16,7 +16,7 @@ export default async function BlogPage() {
           <p className="text-muted-foreground mt-2">Longform content from our community</p>
           <div className="mt-4">
             <Link href="/write">
-              <Button className="text-white bg-red-600 px-4 py-2 rounded">Publish Blog Post</Button>
+              <Button className="text-white bg-red-900 px-4 py-2 rounded hover:bg-red-950 transition-colors">Publish Blog Post</Button>
             </Link>
           </div>
         </div>
