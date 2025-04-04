@@ -121,15 +121,45 @@ export default function Header() {
 
         {/* Mobile Header Layout - Flex */}
         <div className="md:hidden flex items-center justify-between">
-           {/* Branding */}
-           <Link href="/" className="text-2xl font-serif font-bold text-black hover:no-underline"> {/* Black branding */}
-             Verses
-           </Link>
-           {/* Mobile menu button */}
-           <button onClick={toggleMenu} aria-label="Toggle menu">
-             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-           </button>
-         </div>
+          {/* Branding */}
+          <Link href="/" className="text-2xl font-serif font-bold text-black hover:no-underline">
+            Verses
+          </Link>
+          
+          {/* Mobile right side controls */}
+          <div className="flex items-center gap-3">
+            {/* User Avatar (if logged in) */}
+            {user && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-red-900 focus:ring-offset-2">
+                    <Avatar className="h-8 w-8 cursor-pointer hover:opacity-80 transition-opacity">
+                      <AvatarImage src={user.prefs?.avatarUrl || "/placeholder-user.jpg"} alt={user.name || "User"} />
+                      <AvatarFallback className="bg-red-900 text-white text-xs">{getUserInitials()}</AvatarFallback>
+                    </Avatar>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild>
+                    <Link href={`/profile/${user.$id}`} className="cursor-pointer flex w-full">
+                      <User className="mr-2 h-4 w-4" />
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={logout} className="cursor-pointer">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+            
+            {/* Mobile menu button */}
+            <button onClick={toggleMenu} aria-label="Toggle menu" className="p-1">
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </div>
 
         {/* Mobile Navigation Menu */}
         {isMenuOpen && (
@@ -150,27 +180,8 @@ export default function Header() {
             {user ? (
               <div className="pt-3 border-t border-gray-100 mt-2">
                 <div className="flex items-center gap-3 py-2">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.prefs?.avatarUrl || "/placeholder-user.jpg"} alt={user.name || "User"} />
-                    <AvatarFallback className="bg-red-900 text-white text-xs">{getUserInitials()}</AvatarFallback>
-                  </Avatar>
                   <span className="font-medium">{user.name}</span>
                 </div>
-                <Link 
-                  href={`/profile/${user.$id}`} 
-                  className="flex items-center gap-2 text-gray-700 hover:text-red-900 py-2 w-full"
-                  onClick={toggleMenu}
-                >
-                  <User className="h-4 w-4" />
-                  Profile
-                </Link>
-                <button
-                  onClick={() => { logout(); toggleMenu(); }}
-                  className="flex items-center gap-2 text-left text-gray-700 hover:text-red-900 py-2 w-full"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Log Out
-                </button>
               </div>
             ) : (
               <div className="flex flex-col gap-3 pt-3">
