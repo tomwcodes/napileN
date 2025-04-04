@@ -2,12 +2,12 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react" // Import useEffect
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 
 export default function WritePage() {
-  const { user } = useAuth()
+  const { user, loading } = useAuth() // Get loading state
   const router = useRouter()
   const [formData, setFormData] = useState({
     title: "",
@@ -55,21 +55,28 @@ export default function WritePage() {
     }
   }
 
-  if (!user) {
-    return (
-      <div className="text-center py-12">
-        <h1 className="mb-4">Write Something New</h1>
-        <p className="mb-6 text-muted-foreground">You need to be logged in to submit content.</p>
-        <a href="/login" className="btn btn-primary">
-          Log In
-        </a>
-        <span className="mx-2">or</span>
-        <a href="/register" className="btn btn-outline">
-          Register
-        </a>
-      </div>
-    )
+  // Redirect if not logged in after loading is complete
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login")
+    }
+  }, [user, loading, router])
+
+  // Optional: Show loading state
+  if (loading) {
+    return <div className="text-center py-12">Loading...</div>
   }
+
+  // If loading is done and user exists, render the form.
+  // If loading is done and user doesn't exist, the useEffect above will redirect.
+  // If user is null but loading is true, the loading indicator is shown.
+  // This check ensures we don't render the form briefly before redirecting.
+  if (!user) {
+    // This should ideally not be reached if loading is false due to the redirect,
+    // but it's a safeguard. Could return null or a minimal loading/redirecting message.
+    return null;
+  }
+
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -134,4 +141,3 @@ export default function WritePage() {
     </div>
   )
 }
-
