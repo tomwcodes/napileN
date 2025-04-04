@@ -41,14 +41,19 @@ export default function RegisterPage() {
     setError("")
 
     try {
-      // This would be replaced with Appwrite Auth in phase 2
-      await register(formData.name, formData.email, formData.password)
-      router.push("/")
-    } catch (err) {
-      setError("Failed to create account. Please try again.")
-      console.error(err)
+      await register(formData.name, formData.email, formData.password);
+      // The register function in AuthContext now handles login automatically
+      router.push("/"); // Redirect to home on successful registration + login
+    } catch (err: any) { // Use 'any' or check type more specifically
+      // Check if it's an Appwrite exception and use its message
+      if (err?.message) {
+        setError(err.message);
+      } else {
+        setError("An unexpected error occurred during registration.");
+      }
+      console.error("Registration failed:", err);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
   }
 
@@ -137,4 +142,3 @@ export default function RegisterPage() {
     </div>
   )
 }
-

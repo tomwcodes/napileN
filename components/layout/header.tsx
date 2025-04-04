@@ -38,7 +38,8 @@ export default function Header() {
 
             {user ? (
               <div className="flex items-center gap-4">
-                <Link href={`/profile/${user.username}`} className="hover:text-accent">
+                {/* Use user.$id for the profile link */}
+                <Link href={`/profile/${user.$id}`} className="hover:text-accent">
                   Profile
                 </Link>
                 <button onClick={logout} className="btn btn-outline">
@@ -73,7 +74,8 @@ export default function Header() {
 
             {user ? (
               <>
-                <Link href={`/profile/${user.username}`} className="hover:text-accent py-2">
+                {/* Use user.$id for the profile link */}
+                <Link href={`/profile/${user.$id}`} className="hover:text-accent py-2">
                   Profile
                 </Link>
                 <button onClick={logout} className="btn btn-outline w-full">

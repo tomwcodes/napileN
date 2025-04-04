@@ -34,14 +34,18 @@ export default function LoginPage() {
     setError("")
 
     try {
-      // This would be replaced with Appwrite Auth in phase 2
-      await login(formData.email, formData.password)
-      router.push("/")
-    } catch (err) {
-      setError("Invalid email or password")
-      console.error(err)
+      await login(formData.email, formData.password);
+      router.push("/"); // Redirect to home on successful login
+    } catch (err: any) { // Use 'any' or check type more specifically
+      // Check if it's an Appwrite exception and use its message
+      if (err?.message) {
+        setError(err.message);
+      } else {
+        setError("An unexpected error occurred during login.");
+      }
+      console.error("Login failed:", err);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
   }
 
@@ -98,4 +102,3 @@ export default function LoginPage() {
     </div>
   )
 }
-
