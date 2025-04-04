@@ -4,6 +4,8 @@ import ContentFilter from "@/components/content/content-filter"
 import { getPoems } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 
+export const dynamic = 'force-dynamic'; // Opt out of static rendering
+
 export default async function PoetryPage() {
   const poems = await getPoems()
 

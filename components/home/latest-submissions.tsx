@@ -1,6 +1,8 @@
 import Link from "next/link"
 import { getLatestContent } from "@/lib/data"
 
+export const dynamic = 'force-dynamic'; // Opt out of static rendering
+
 export default async function LatestSubmissions() {
   const latestContent = await getLatestContent(5)
 

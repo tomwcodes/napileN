@@ -3,6 +3,8 @@ import ContentList from "@/components/content/content-list"
 import { getBlogs } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 
+export const dynamic = 'force-dynamic'; // Opt out of static rendering
+
 export default async function BlogPage() {
   const blogs = await getBlogs()
 
