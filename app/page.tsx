@@ -8,8 +8,8 @@ export const revalidate = 0; // Force dynamic rendering and revalidation
 
 export default async function Home() { // Make the component async
   // Fetch data for the new component
-  const recentContent = await getLatestContent(6); // Fetch 6 items for a 3-col grid
-  const mostReadContent = await getLatestContent(6); // Placeholder: Use latest for most read for now
+  const recentContent = await getLatestContent(9); // Fetch 9 items for a 3-col grid
+  const mostReadContent = await getLatestContent(9); // Placeholder: Use latest for most read for now
   return (
     <div className="space-y-12">
       {/* Hero Section */}
@@ -23,7 +23,7 @@ export default async function Home() { // Make the component async
         <Link href="/write">
           <Button
             size="lg"
-            className="bg-red-700 hover:bg-red-800 text-white font-bold rounded-lg px-6 py-3"
+            className="bg-red-900 hover:bg-red-950 text-white font-bold rounded-lg px-6 py-3 transition-colors"
           >
             Start Writing
           </Button>
