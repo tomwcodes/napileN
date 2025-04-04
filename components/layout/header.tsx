@@ -45,6 +45,9 @@ export default function Header() {
 
           {/* Centered Navigation Links - Column 2 */}
           <nav className="col-span-1 flex justify-center items-center gap-8"> {/* Center links */}
+            <Link href="/" className={getLinkClass("/")}>
+              Home
+            </Link>
             <Link href="/poetry" className={getLinkClass("/poetry")}>
               Poetry
             </Link>
@@ -104,6 +107,9 @@ export default function Header() {
         {/* Mobile Navigation Menu */}
         {isMenuOpen && (
           <nav className="md:hidden mt-4 pt-4 border-t border-gray-100 flex flex-col gap-2">
+            <Link href="/" className={getMobileLinkClass("/")} onClick={toggleMenu}>
+              Home
+            </Link>
             <Link href="/poetry" className={getMobileLinkClass("/poetry")} onClick={toggleMenu}>
               Poetry
             </Link>

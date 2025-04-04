@@ -35,11 +35,6 @@ export default function Footer() {
                   Blog
                 </Link>
               </li>
-              <li>
-                <Link href="/write" className="text-muted-foreground hover:text-accent">
-                  Write
-                </Link>
-              </li>
             </ul>
           </div>
 
