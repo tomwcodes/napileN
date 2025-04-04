@@ -1,10 +1,26 @@
 import { Models } from "appwrite"; // Import Appwrite Models
 
 interface UserProfileProps {
-  user: Models.User<Models.Preferences>; // Use Appwrite User type
+  user: Models.User<Models.Preferences> | null; // Allow null user
 }
 
 export default function UserProfile({ user }: UserProfileProps) {
+  // Handle null user case
+  if (!user) {
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
+          <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center text-3xl font-serif">
+            ?
+          </div>
+          <div>
+            <h1 className="mb-2">User Not Found</h1>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Appwrite SDK typically returns ISO string for $createdAt
   const joinedDate = user.$createdAt ? new Date(user.$createdAt).toLocaleDateString() : "N/A";
 
