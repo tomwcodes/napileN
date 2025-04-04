@@ -1,5 +1,4 @@
 import LatestSubmissions from "@/components/home/latest-submissions"
-import EditorsPicks from "@/components/home/editors-picks"
 
 export default function Home() {
   return (
@@ -12,9 +11,8 @@ export default function Home() {
         </p>
       </section>
 
-      <div className="grid md:grid-cols-2 gap-12">
+      <div>
         <LatestSubmissions />
-        <EditorsPicks />
       </div>
     </div>
   )
