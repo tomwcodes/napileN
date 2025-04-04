@@ -1,5 +1,7 @@
 import LatestSubmissions from "@/components/home/latest-submissions"
 
+export const revalidate = 0; // Force dynamic rendering and revalidation
+
 export default function Home() {
   return (
     <div className="space-y-12">
