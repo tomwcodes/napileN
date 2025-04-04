@@ -17,85 +17,93 @@ export default function Header() {
 
   // Helper function for link classes
   const getLinkClass = (href: string) => {
-    const isActive = pathname === href
-    return `hover:text-red-700 ${
-      isActive ? "font-bold text-red-700" : "text-slate-600"
+    const isActive = pathname === href || (href !== "/" && pathname?.startsWith(href)); // Handle nested routes for active state
+    return `hover:text-red-900 ${ // Use red-900 for hover
+      isActive ? "font-bold text-red-900" : "text-gray-600" // Use gray-600 and red-900
     }`
   }
 
   // Helper function for mobile link classes
   const getMobileLinkClass = (href: string) => {
-    const isActive = pathname === href
-    return `py-2 hover:text-red-700 ${
-      isActive ? "font-bold text-red-700" : "text-slate-600"
+    const isActive = pathname === href || (href !== "/" && pathname?.startsWith(href));
+    return `py-2 hover:text-red-900 ${ // Use red-900 for hover
+      isActive ? "font-bold text-red-900" : "text-gray-600" // Use gray-600 and red-900
     }`
   }
 
   return (
     <header className="bg-white shadow-sm"> {/* White background, subtle shadow */}
       <div className="container mx-auto px-4 py-6"> {/* Increased vertical padding */}
-        <div className="flex items-center justify-between">
-          {/* Branding */}
-          <Link href="/" className="text-2xl font-serif font-bold text-gray-800 hover:no-underline">
-            Verses {/* Updated branding text */}
-          </Link>
+        {/* Desktop Header Layout - Grid */}
+        <div className="hidden md:grid md:grid-cols-3 md:items-center">
+          {/* Branding - Column 1 */}
+          <div className="col-span-1">
+            <Link href="/" className="text-2xl font-serif font-bold text-black hover:no-underline"> {/* Black branding */}
+              Verses
+            </Link>
+          </div>
 
-          {/* Mobile menu button */}
-          <button className="md:hidden" onClick={toggleMenu} aria-label="Toggle menu">
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {/* Centered Navigation Links - Column 2 */}
+          <nav className="col-span-1 flex justify-center items-center gap-8"> {/* Center links */}
+            <Link href="/poetry" className={getLinkClass("/poetry")}>
+              Poetry
+            </Link>
+            <Link href="/stories" className={getLinkClass("/stories")}>
+              Stories
+            </Link>
+            <Link href="/blog" className={getLinkClass("/blog")}>
+              Blog
+            </Link>
+          </nav>
 
-          {/* Desktop Navigation & Auth */}
-          <div className="hidden md:flex items-center gap-10"> {/* Increased gap */}
-            {/* Centered Navigation Links */}
-            <nav className="flex items-center gap-8"> {/* Adjusted gap */}
-              <Link href="/poetry" className={getLinkClass("/poetry")}>
-                Poetry
-              </Link>
-              <Link href="/stories" className={getLinkClass("/stories")}>
-                Stories
-              </Link>
-              <Link href="/blog" className={getLinkClass("/blog")}>
-                Blog
-              </Link>
-            </nav>
-
-            {/* Auth Links/Buttons */}
+          {/* Auth Links/Buttons - Column 3 */}
+          <div className="col-span-1 flex justify-end items-center gap-6"> {/* Align right */}
             {user ? (
-              <div className="flex items-center gap-6"> {/* Adjusted gap */}
-                {/* Use user.$id for the profile link */}
+              <>
                 <Link href={`/profile/${user.$id}`} className={getLinkClass(`/profile/${user.$id}`)}>
                   Profile
                 </Link>
                 <button
                   onClick={logout}
-                  className="text-slate-700 hover:text-red-700" /* Simple text link style */
+                  className="text-gray-700 hover:text-red-900" /* Adjusted text color */
                 >
                   Log Out
                 </button>
-              </div>
+              </>
             ) : (
-              <div className="flex items-center gap-6"> {/* Adjusted gap */}
+              <>
                 <Link
                   href="/login"
-                  className="text-slate-700 hover:text-red-700" /* Simple text link style */
+                  className="text-gray-700 hover:text-red-900" /* Adjusted text color */
                 >
                   Log in
                 </Link>
                 <Link
                   href="/register"
-                  className="bg-red-700 text-white font-bold rounded-md px-4 py-2 text-sm hover:bg-red-800 transition-colors" /* Red button style */
+                  className="bg-red-900 text-white font-bold rounded-md px-4 py-2 text-sm hover:bg-red-950 transition-colors" /* Adjusted red color */
                 >
                   Sign up
                 </Link>
-              </div>
+              </>
             )}
-          </div> {/* Correctly closes the div started on line 56 */}
+          </div>
         </div>
+
+        {/* Mobile Header Layout - Flex */}
+        <div className="md:hidden flex items-center justify-between">
+           {/* Branding */}
+           <Link href="/" className="text-2xl font-serif font-bold text-black hover:no-underline"> {/* Black branding */}
+             Verses
+           </Link>
+           {/* Mobile menu button */}
+           <button onClick={toggleMenu} aria-label="Toggle menu">
+             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+           </button>
+         </div>
 
         {/* Mobile Navigation Menu */}
         {isMenuOpen && (
-          <nav className="md:hidden mt-4 pt-4 border-t border-gray-100 flex flex-col gap-2"> {/* Added top border, adjusted gap */}
+          <nav className="md:hidden mt-4 pt-4 border-t border-gray-100 flex flex-col gap-2">
             <Link href="/poetry" className={getMobileLinkClass("/poetry")} onClick={toggleMenu}>
               Poetry
             </Link>
@@ -114,23 +122,23 @@ export default function Header() {
                 </Link>
                 <button
                   onClick={() => { logout(); toggleMenu(); }}
-                  className="text-left text-slate-700 hover:text-red-700 py-2 w-full" /* Simple text button style */
+                  className="text-left text-gray-700 hover:text-red-900 py-2 w-full" /* Adjusted colors */
                 >
                   Log Out
                 </button>
               </>
             ) : (
-              <div className="flex flex-col gap-3 pt-3"> {/* Adjusted gap and padding */}
+              <div className="flex flex-col gap-3 pt-3">
                 <Link
                   href="/login"
-                  className="text-center text-slate-700 hover:text-red-700 py-2 border border-slate-300 rounded-md w-full" /* Simple bordered button */
+                  className="text-center text-gray-700 hover:text-red-900 py-2 border border-gray-300 rounded-md w-full" /* Adjusted colors */
                   onClick={toggleMenu}
                 >
                   Log in
                 </Link>
                 <Link
                   href="/register"
-                  className="bg-red-700 text-white text-center font-bold rounded-md px-4 py-2 text-sm hover:bg-red-800 transition-colors w-full" /* Red button style */
+                  className="bg-red-900 text-white text-center font-bold rounded-md px-4 py-2 text-sm hover:bg-red-950 transition-colors w-full" /* Adjusted colors */
                   onClick={toggleMenu}
                 >
                   Sign up
