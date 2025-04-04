@@ -77,15 +77,9 @@ export async function getBlogs(): Promise<Content[]> {
       [Query.equal("type", "blog")]
     );
     
-    console.log("Raw Appwrite response for getBlogs:", JSON.stringify(response, null, 2)); // Added for debugging
-    
-    const mappedBlogs = response.documents.map(mapDocumentToContent);
-    console.log("Mapped blogs:", JSON.stringify(mappedBlogs, null, 2)); // Added for debugging
-    
-    return mappedBlogs;
+    return response.documents.map(mapDocumentToContent);
   } catch (error) {
     console.error("Error fetching blogs:", error);
-    console.error("Error details:", JSON.stringify(error, null, 2)); // Added for debugging
     return [];
   }
 }
