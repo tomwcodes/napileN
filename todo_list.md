@@ -2,8 +2,6 @@
 
 Here are the next steps to fully integrate Appwrite and enhance the application:
 
-- [ ] **Refine Profile Page:**
-    - [ ] Allow viewing other users' profiles (requires fetching data, possibly from a public database collection, rather than just checking against the logged-in user).
     - [ ] Consider creating an "extended profiles" collection in Appwrite DB to store `bio`, `username` (if desired and unique), `publicationCount`, etc., and fetch/display this data.
 - [ ] **Address Peer Dependency Warnings:** Investigate and potentially resolve the React/date-fns peer dependency warnings shown during `pnpm add appwrite`.
 - [ ] **Error Handling:** Review and potentially enhance error handling across components interacting with Appwrite.
