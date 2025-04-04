@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground: #1a1a1a;
+  --background: #ffffff;
+  --accent: #8b0000;
+  --muted: #f5f5f5;
+  --muted-foreground: #737373;
+  --border: #e5e5e5;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-serif);
+}
+
+@layer base {
+  h1 {
+    @apply text-3xl font-semibold md:text-4xl;
+  }
+  h2 {
+    @apply text-2xl font-semibold md:text-3xl;
+  }
+  h3 {
+    @apply text-xl font-semibold md:text-2xl;
+  }
+  h4 {
+    @apply text-lg font-semibold md:text-xl;
+  }
+  a {
+    @apply text-accent hover:underline;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-sm transition-colors;
+  }
+
+  .btn-primary {
+    @apply bg-accent text-white hover:bg-accent/90 hover:no-underline;
+  }
+
+  .btn-secondary {
+    @apply bg-muted text-foreground hover:bg-muted/80 hover:no-underline;
+  }
+
+  .btn-outline {
+    @apply border border-accent text-accent hover:bg-accent/10 hover:no-underline;
+  }
+
+  .card {
+    @apply border border-border p-6 rounded-sm transition-all hover:shadow-sm;
+  }
+
+  .form-group {
+    @apply flex flex-col gap-2 mb-4;
+  }
+
+  .form-input {
+    @apply px-3 py-2 border border-border rounded-sm focus:outline-none focus:ring-1 focus:ring-accent;
+  }
+
+  .form-textarea {
+    @apply px-3 py-2 border border-border rounded-sm focus:outline-none focus:ring-1 focus:ring-accent min-h-[200px];
+  }
+
+  .form-select {
+    @apply px-3 py-2 border border-border rounded-sm focus:outline-none focus:ring-1 focus:ring-accent;
+  }
+
+  .form-label {
+    @apply text-sm font-medium;
+  }
+}
+
