@@ -1,3 +1,5 @@
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 import LatestSubmissions from "@/components/home/latest-submissions"
 
 export const revalidate = 0; // Force dynamic rendering and revalidation
@@ -11,6 +13,11 @@ export default function Home() {
           A minimalist platform for publishing and reading poems and stories. Share your creative writing with the world
           or discover new voices.
         </p>
+        <div className="mt-6">
+          <Link href="/write">
+            <Button>Publish</Button>
+          </Link>
+        </div>
       </section>
 
       <div>
