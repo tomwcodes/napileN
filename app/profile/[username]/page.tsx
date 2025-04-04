@@ -24,17 +24,18 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   const userContent = getUserContent(userIdFromParams)
 
   useEffect(() => {
-    // Redirect if loading finishes and user is not logged in or ID doesn't match
-    if (!authLoading && (!authUser || authUser.$id !== userIdFromParams)) {
-      // Option 1: Redirect to login if not logged in
-      // if (!authUser) {
-      //   router.push('/login');
-      //   return;
-      // }
-      // Option 2: Show not found for non-matching IDs or not logged in
-      notFound()
+    // Wait until authentication status is resolved
+    if (!authLoading) {
+      if (!authUser) {
+        // If user is not logged in (e.g., after logout), redirect to homepage
+        router.push('/');
+      } else if (authUser.$id !== userIdFromParams) {
+        // If logged in user's ID doesn't match the profile ID, show not found
+        notFound();
+      }
+      // If user is logged in and IDs match, render the profile (do nothing here)
     }
-  }, [authLoading, authUser, userIdFromParams, router])
+  }, [authLoading, authUser, userIdFromParams, router]);
 
   // Show loading state while auth is resolving
   if (authLoading || !authUser || authUser.$id !== userIdFromParams) {
