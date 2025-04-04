@@ -1,17 +1,33 @@
 "use client"
 
-"use client"
-
 import Link from "next/link"
 import { useState } from "react"
-import { usePathname } from "next/navigation" // Import usePathname
+import { usePathname } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
-import { Menu, X } from "lucide-react"
+import { Menu, X, User, LogOut } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export default function Header() {
-  const pathname = usePathname() // Get current path
+  const pathname = usePathname()
   const { user, logout } = useAuth()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  
+  // Function to get user initials for avatar fallback
+  const getUserInitials = () => {
+    if (!user || !user.name) return "U"
+    return user.name
+      .split(" ")
+      .map(part => part[0])
+      .join("")
+      .toUpperCase()
+      .substring(0, 2)
+  }
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen)
 
@@ -60,19 +76,30 @@ export default function Header() {
           </nav>
 
           {/* Auth Links/Buttons - Column 3 */}
-          <div className="col-span-1 flex justify-end items-center gap-6"> {/* Align right */}
+          <div className="col-span-1 flex justify-end items-center gap-6">
             {user ? (
-              <>
-                <Link href={`/profile/${user.$id}`} className={getLinkClass(`/profile/${user.$id}`)}>
-                  Profile
-                </Link>
-                <button
-                  onClick={logout}
-                  className="text-gray-700 hover:text-red-900" /* Adjusted text color */
-                >
-                  Log Out
-                </button>
-              </>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-red-900 focus:ring-offset-2">
+                    <Avatar className="h-9 w-9 cursor-pointer hover:opacity-80 transition-opacity">
+                      <AvatarImage src={user.prefs?.avatarUrl || "/placeholder-user.jpg"} alt={user.name || "User"} />
+                      <AvatarFallback className="bg-red-900 text-white">{getUserInitials()}</AvatarFallback>
+                    </Avatar>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild>
+                    <Link href={`/profile/${user.$id}`} className="cursor-pointer flex w-full">
+                      <User className="mr-2 h-4 w-4" />
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={logout} className="cursor-pointer">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <>
                 <Link
@@ -121,18 +148,30 @@ export default function Header() {
             </Link>
 
             {user ? (
-              <>
-                {/* Use user.$id for the profile link */}
-                <Link href={`/profile/${user.$id}`} className={getMobileLinkClass(`/profile/${user.$id}`)} onClick={toggleMenu}>
+              <div className="pt-3 border-t border-gray-100 mt-2">
+                <div className="flex items-center gap-3 py-2">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={user.prefs?.avatarUrl || "/placeholder-user.jpg"} alt={user.name || "User"} />
+                    <AvatarFallback className="bg-red-900 text-white text-xs">{getUserInitials()}</AvatarFallback>
+                  </Avatar>
+                  <span className="font-medium">{user.name}</span>
+                </div>
+                <Link 
+                  href={`/profile/${user.$id}`} 
+                  className="flex items-center gap-2 text-gray-700 hover:text-red-900 py-2 w-full"
+                  onClick={toggleMenu}
+                >
+                  <User className="h-4 w-4" />
                   Profile
                 </Link>
                 <button
                   onClick={() => { logout(); toggleMenu(); }}
-                  className="text-left text-gray-700 hover:text-red-900 py-2 w-full" /* Adjusted colors */
+                  className="flex items-center gap-2 text-left text-gray-700 hover:text-red-900 py-2 w-full"
                 >
+                  <LogOut className="h-4 w-4" />
                   Log Out
                 </button>
-              </>
+              </div>
             ) : (
               <div className="flex flex-col gap-3 pt-3">
                 <Link
