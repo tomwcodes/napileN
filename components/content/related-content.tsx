@@ -6,8 +6,8 @@ interface RelatedContentProps {
   type: string
 }
 
-export default function RelatedContent({ contentId, type }: RelatedContentProps) {
-  const relatedContent = getRelatedContent(contentId, type, 3)
+export default async function RelatedContent({ contentId, type }: RelatedContentProps) {
+  const relatedContent = await getRelatedContent(contentId, type, 3)
 
   if (relatedContent.length === 0) {
     return null
@@ -40,4 +40,3 @@ export default function RelatedContent({ contentId, type }: RelatedContentProps)
     </section>
   )
 }
-

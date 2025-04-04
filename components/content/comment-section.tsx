@@ -2,10 +2,11 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useAuth } from "@/lib/auth-context"
 import { getCommentsByContentId } from "@/lib/data"
 import CommentItem from "./comment-item"
+import type { Comment } from "@/lib/types"
 
 interface CommentSectionProps {
   contentId: string
@@ -14,7 +15,24 @@ interface CommentSectionProps {
 export default function CommentSection({ contentId }: CommentSectionProps) {
   const { user } = useAuth()
   const [comment, setComment] = useState("")
-  const [comments, setComments] = useState(getCommentsByContentId(contentId))
+  const [comments, setComments] = useState<Comment[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchComments() {
+      try {
+        setLoading(true)
+        const fetchedComments = await getCommentsByContentId(contentId)
+        setComments(fetchedComments)
+      } catch (error) {
+        console.error("Error fetching comments:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fetchComments()
+  }, [contentId])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -27,13 +45,13 @@ export default function CommentSection({ contentId }: CommentSectionProps) {
     if (!comment.trim()) return
 
     // This would be replaced with Appwrite SDK in phase 2
-    const newComment = {
+    const newComment: Comment = {
       id: Date.now().toString(),
       contentId,
       author: {
-        id: user.id,
-        name: user.name,
-        username: user.username,
+        id: user.$id || "anonymous",
+        name: user.name || "Anonymous",
+        username: user.$id || "anonymous",
       },
       body: comment,
       createdAt: new Date().toISOString(),
@@ -87,4 +105,3 @@ export default function CommentSection({ contentId }: CommentSectionProps) {
     </section>
   )
 }
-

@@ -11,7 +11,7 @@ interface ContentPageProps {
   }
 }
 
-export default function ContentPage({ params }: ContentPageProps) {
+export default async function ContentPage({ params }: ContentPageProps) {
   const { type, slug } = params
 
   // Validate content type
@@ -19,7 +19,7 @@ export default function ContentPage({ params }: ContentPageProps) {
     notFound()
   }
 
-  const content = getContentBySlug(type, slug)
+  const content = await getContentBySlug(type, slug)
 
   if (!content) {
     notFound()
@@ -37,4 +37,3 @@ export default function ContentPage({ params }: ContentPageProps) {
     </div>
   )
 }
-
