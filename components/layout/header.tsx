@@ -35,9 +35,6 @@ export default function Header() {
             <Link href="/blog" className="hover:text-accent">
               Blog
             </Link>
-            <Link href="/write" className="hover:text-accent">
-              Write
-            </Link>
 
             {user ? (
               <div className="flex items-center gap-4">
@@ -73,9 +70,6 @@ export default function Header() {
             <Link href="/blog" className="hover:text-accent py-2">
               Blog
             </Link>
-            <Link href="/write" className="hover:text-accent py-2">
-              Write
-            </Link>
 
             {user ? (
               <>
@@ -102,4 +96,3 @@ export default function Header() {
     </header>
   )
 }
-
