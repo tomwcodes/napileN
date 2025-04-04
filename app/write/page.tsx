@@ -5,6 +5,7 @@ import type React from "react"
 import { useState, useEffect } from "react" // Import useEffect
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
+import { createContent } from "@/lib/data" // Import the createContent function
 
 export default function WritePage() {
   const { user, loading } = useAuth() // Get loading state
@@ -39,11 +40,18 @@ export default function WritePage() {
     setError("")
 
     try {
-      // This would be replaced with Appwrite SDK calls in phase 2
-      console.log("Submitting content:", formData)
+      // Use the createContent function to save the content to Appwrite
+      const result = await createContent(
+        formData.title,
+        formData.body,
+        formData.category,
+        user.$id,
+        user.name || "Anonymous"
+      )
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      if (!result) {
+        throw new Error("Failed to create content")
+      }
 
       // Redirect to the appropriate page based on category
       router.push(`/${formData.category === "poetry" ? "poetry" : formData.category === "story" ? "stories" : "blog"}`)

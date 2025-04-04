@@ -1,6 +1,6 @@
 import type { User, Content, Comment } from "./types";
 import { databases, DATABASES_ID, CONTENT_COLLECTION_ID, USER_PROFILES_COLLECTION_ID } from "./appwrite";
-import { Query } from "appwrite";
+import { Query, ID } from "appwrite";
 
 // Helper function to convert Appwrite document to Content type
 const mapDocumentToContent = (doc: any): Content => {
@@ -229,5 +229,39 @@ export async function getRelatedContent(contentId: string, type: string, limit =
   } catch (error) {
     console.error("Error fetching related content:", error);
     return [];
+  }
+}
+
+// Create new content
+export async function createContent(
+  title: string,
+  body: string,
+  type: string,
+  authorId: string,
+  authorName: string
+): Promise<Content | null> {
+  try {
+    // Convert type parameter if needed
+    const dbType = type === "stories" ? "story" : type;
+    
+    // Create the document in Appwrite
+    const response = await databases.createDocument(
+      DATABASES_ID,
+      CONTENT_COLLECTION_ID,
+      ID.unique(),
+      {
+        title,
+        body,
+        type: dbType,
+        authorId,
+        authorName,
+        PublishedAt: new Date().toISOString()
+      }
+    );
+    
+    return mapDocumentToContent(response);
+  } catch (error) {
+    console.error("Error creating content:", error);
+    return null;
   }
 }
