@@ -1,8 +1,8 @@
 import Link from "next/link"
 import { getLatestContent } from "@/lib/data"
 
-export default function LatestSubmissions() {
-  const latestContent = getLatestContent(5)
+export default async function LatestSubmissions() {
+  const latestContent = await getLatestContent(5)
 
   return (
     <section>
@@ -40,4 +40,3 @@ export default function LatestSubmissions() {
     </section>
   )
 }
-

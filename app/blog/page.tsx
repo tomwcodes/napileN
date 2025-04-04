@@ -3,8 +3,8 @@ import ContentList from "@/components/content/content-list"
 import { getBlogs } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 
-export default function BlogPage() {
-  const blogs = getBlogs()
+export default async function BlogPage() {
+  const blogs = await getBlogs()
 
   return (
     <div className="space-y-8">

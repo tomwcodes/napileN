@@ -4,8 +4,8 @@ import ContentFilter from "@/components/content/content-filter"
 import { getPoems } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 
-export default function PoetryPage() {
-  const poems = getPoems()
+export default async function PoetryPage() {
+  const poems = await getPoems()
 
   return (
     <div className="space-y-8">

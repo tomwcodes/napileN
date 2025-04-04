@@ -4,8 +4,8 @@ import ContentFilter from "@/components/content/content-filter"
 import { getStories } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 
-export default function StoriesPage() {
-  const stories = getStories()
+export default async function StoriesPage() {
+  const stories = await getStories()
 
   return (
     <div className="space-y-8">

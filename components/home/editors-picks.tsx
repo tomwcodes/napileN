@@ -1,8 +1,8 @@
 import Link from "next/link"
 import { getEditorsPicks } from "@/lib/data"
 
-export default function EditorsPicks() {
-  const editorsPicks = getEditorsPicks(5)
+export default async function EditorsPicks() {
+  const editorsPicks = await getEditorsPicks(5)
 
   return (
     <section>
@@ -40,4 +40,3 @@ export default function EditorsPicks() {
     </section>
   )
 }
-
