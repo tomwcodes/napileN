@@ -1,4 +1,3 @@
-import FeaturedContent from "@/components/home/featured-content"
 import LatestSubmissions from "@/components/home/latest-submissions"
 import EditorsPicks from "@/components/home/editors-picks"
 
@@ -13,8 +12,6 @@ export default function Home() {
         </p>
       </section>
 
-      <FeaturedContent />
-
       <div className="grid md:grid-cols-2 gap-12">
         <LatestSubmissions />
         <EditorsPicks />
@@ -22,4 +19,3 @@ export default function Home() {
     </div>
   )
 }
-
