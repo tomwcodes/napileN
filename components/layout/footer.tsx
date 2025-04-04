@@ -43,7 +43,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div>
+          {/* <div>
             <h3 className="text-lg font-semibold mb-4">Legal</h3>
             <ul className="space-y-2">
               <li>
@@ -62,7 +62,7 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
-          </div>
+          </div> */}
         </div>
 
         <div className="border-t border-border mt-8 pt-8 text-center text-muted-foreground">
@@ -72,4 +72,3 @@ export default function Footer() {
     </footer>
   )
 }
-
