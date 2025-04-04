@@ -63,26 +63,31 @@ export default function CommentSection({ contentId }: CommentSectionProps) {
 
   return (
     <section className="space-y-6">
-      <h2>Comments ({comments.length})</h2>
+      <div>
+        <h2>Comments ({comments.length})</h2>
+        {comments.length === 0 && (
+          <p className="text-muted-foreground mt-2">No comments yet. Be the first to comment!</p>
+        )}
+      </div>
 
       {user ? (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="mt-6 mb-2 w-full max-w-2xl">
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="Add a comment..."
-            className="form-textarea"
+            className="border px-4 py-2 rounded w-full mb-2"
             rows={3}
           />
 
-          <div className="flex justify-end">
-            <button type="submit" className="btn btn-primary">
+          <div>
+            <button type="submit" className="bg-red-700 text-white px-4 py-2 rounded">
               Post Comment
             </button>
           </div>
         </form>
       ) : (
-        <div className="bg-muted p-4 rounded-sm text-center">
+        <div className="bg-muted p-4 rounded-sm text-center mt-6 mb-2">
           <p className="mb-2">You need to be logged in to comment.</p>
           <div className="flex justify-center gap-4">
             <a href="/login" className="btn btn-primary">
@@ -95,11 +100,9 @@ export default function CommentSection({ contentId }: CommentSectionProps) {
         </div>
       )}
 
-      <div className="space-y-6 pt-4">
-        {comments.length > 0 ? (
+      <div className="space-y-6 mt-6">
+        {comments.length > 0 && (
           comments.map((comment) => <CommentItem key={comment.id} comment={comment} />)
-        ) : (
-          <p className="text-muted-foreground text-center py-4">No comments yet. Be the first to comment!</p>
         )}
       </div>
     </section>
