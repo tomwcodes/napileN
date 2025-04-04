@@ -36,7 +36,7 @@ export default function ContentList({ items, type }: ContentListProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Link href={`/profile/${item.author.username}`} className="text-sm font-medium">
-                By {item.author.name}
+                {item.author.name}
               </Link>
               <span className="text-xs text-muted-foreground">{new Date(item.createdAt).toLocaleDateString()}</span>
             </div>
@@ -58,4 +58,3 @@ export default function ContentList({ items, type }: ContentListProps) {
     </div>
   )
 }
-
