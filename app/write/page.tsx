@@ -54,7 +54,7 @@ export default function WritePage() {
       }
 
       // Redirect to the appropriate page based on category
-      router.push(`/${formData.category === "poetry" ? "poetry" : formData.category === "story" ? "stories" : "blog"}`)
+      router.push(`/${formData.category === "poetry" ? "poetry" : formData.category === "story" ? "stories" : "articles"}`)
     } catch (err) {
       setError("Failed to submit content. Please try again.")
       console.error(err)
@@ -123,7 +123,7 @@ export default function WritePage() {
           >
             <option value="poetry">Poetry</option>
             <option value="story">Short Story</option>
-            <option value="blog">Blog Post</option>
+            <option value="article">Article</option>
           </select>
         </div>
 

@@ -18,8 +18,8 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Navigation</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/" className="text-muted-foreground hover:text-accent">
-                  Home
+                <Link href="/articles" className="text-muted-foreground hover:text-accent">
+                  Articles
                 </Link>
               </li>
               <li>

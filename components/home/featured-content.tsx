@@ -15,7 +15,7 @@ interface FeaturedContentProps {
 // Helper component to render a single content card
 const ContentCard = ({ content }: { content: Content }) => (
   <Link
-    href={`/${content.type === "poetry" ? "poetry" : content.type === "story" ? "stories" : "blog"}/${content.slug}`}
+    href={`/${content.type === "poetry" ? "poetry" : content.type === "story" ? "stories" : "articles"}/${content.slug}`}
     className="group block hover:no-underline"
   >
     <Card className="group-hover:border-primary transition-colors h-full flex flex-col">

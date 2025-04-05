@@ -19,11 +19,11 @@ export default async function RelatedContent({ contentId, type }: RelatedContent
 
       <div className="grid md:grid-cols-3 gap-6">
         {relatedContent.map((content) => (
-          <Link
-            key={content.id}
-            href={`/${content.type === "poetry" ? "poetry" : content.type === "story" ? "stories" : "blog"}/${content.slug}`}
-            className="group hover:no-underline"
-          >
+        <Link
+          key={content.id}
+          href={`/${content.type === "poetry" ? "poetry" : content.type === "story" ? "stories" : "articles"}/${content.slug}`}
+          className="group hover:no-underline"
+        >
             <div className="card h-full flex flex-col group-hover:border-accent">
               <div className="mb-2">
                 <span className="text-xs uppercase tracking-wider text-muted-foreground">{content.type}</span>

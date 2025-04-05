@@ -69,18 +69,18 @@ export async function getStories(): Promise<Content[]> {
   }
 }
 
-// Get all blog content
-export async function getBlogs(): Promise<Content[]> {
+// Get all article content
+export async function getArticles(): Promise<Content[]> {
   try {
     const response = await databases.listDocuments(
       DATABASES_ID,
       CONTENT_COLLECTION_ID,
-      [Query.equal("type", "blog")]
+      [Query.equal("type", "article")]
     );
     
     return response.documents.map(mapDocumentToContent);
   } catch (error) {
-    console.error("Error fetching blogs:", error);
+    console.error("Error fetching articles:", error);
     return [];
   }
 }

@@ -15,7 +15,7 @@ export default async function ContentPage({ params }: ContentPageProps) {
   const { type, slug } = params
 
   // Validate content type
-  if (!["poetry", "stories", "blog"].includes(type)) {
+  if (!["poetry", "stories", "articles"].includes(type)) {
     notFound()
   }
 

@@ -4,20 +4,20 @@ import { ThumbsUp, MessageSquare } from "lucide-react"
 
 interface PublishedWorksListProps {
   items: Content[]
-  type?: "works" | "blog" // Filter by content type
+  type?: "works" | "article" // Filter by content type
 }
 
 export default function PublishedWorksList({ items, type = "works" }: PublishedWorksListProps) {
   // Filter items based on type
-  const filteredItems = type === "works" 
+  const filteredItems = type === "works"
     ? items.filter(item => item.type === "poetry" || item.type === "story")
-    : items.filter(item => item.type === "blog")
+    : items.filter(item => item.type === "article")
   
   if (filteredItems.length === 0) {
     return (
       <div className="py-2">
         <p className="text-muted-foreground">
-          {type === "works" ? "No published works yet." : "No blog posts yet."}
+          {type === "works" ? "No published works yet." : "No articles yet."}
         </p>
       </div>
     )
@@ -28,7 +28,7 @@ export default function PublishedWorksList({ items, type = "works" }: PublishedW
       {filteredItems.map((item) => (
         <Link
           key={item.id}
-          href={`/${item.type === "poetry" ? "poetry" : item.type === "story" ? "stories" : "blog"}/${item.slug}`}
+          href={`/${item.type === "poetry" ? "poetry" : item.type === "story" ? "stories" : "articles"}/${item.slug}`}
           className="flex items-center justify-between py-3 px-3 hover:bg-muted/50 transition-colors hover:no-underline"
         >
           <div className="flex items-center gap-3 overflow-hidden">

@@ -14,7 +14,7 @@ export default async function LatestSubmissions() {
         {latestContent.map((content) => (
           <Link
             key={content.id}
-            href={`/${content.type === "poetry" ? "poetry" : content.type === "story" ? "stories" : "blog"}/${content.slug}`}
+            href={`/${content.type === "poetry" ? "poetry" : content.type === "story" ? "stories" : "articles"}/${content.slug}`}
             className="group hover:no-underline"
           >
             <div className="card group-hover:border-accent">

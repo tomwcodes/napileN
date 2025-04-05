@@ -74,8 +74,8 @@ export default function Header() {
             <Link href="/stories" className={getLinkClass("/stories")}>
               Stories
             </Link>
-            <Link href="/blog" className={getLinkClass("/blog")}>
-              Blog
+            <Link href="/articles" className={getLinkClass("/articles")}>
+              Articles
             </Link>
           </nav>
 
@@ -228,8 +228,8 @@ export default function Header() {
             <Link href="/stories" className={getMobileLinkClass("/stories")} onClick={toggleMenu}>
               Stories
             </Link>
-            <Link href="/blog" className={getMobileLinkClass("/blog")} onClick={toggleMenu}>
-              Blog
+            <Link href="/articles" className={getMobileLinkClass("/articles")} onClick={toggleMenu}>
+              Articles
             </Link>
 
             {user ? (

@@ -14,7 +14,7 @@ export interface Content {
   slug: string
   body: string
   excerpt: string
-  type: "poetry" | "story" | "blog"
+  type: "poetry" | "story" | "article"
   author: {
     id: string
     name: string
