@@ -4,20 +4,17 @@ import { ThumbsUp, MessageSquare } from "lucide-react"
 
 interface PublishedWorksListProps {
   items: Content[]
-  type?: "works" | "article" // Filter by content type
+  // Removed type prop
 }
 
-export default function PublishedWorksList({ items, type = "works" }: PublishedWorksListProps) {
-  // Filter items based on type
-  const filteredItems = type === "works"
-    ? items.filter(item => item.type === "poetry" || item.type === "story")
-    : items.filter(item => item.type === "article")
+export default function PublishedWorksList({ items }: PublishedWorksListProps) {
+  // Removed filtering logic, use items directly
   
-  if (filteredItems.length === 0) {
+  if (items.length === 0) {
     return (
       <div className="py-2">
         <p className="text-muted-foreground">
-          {type === "works" ? "No published works yet." : "No articles yet."}
+          No published content yet.
         </p>
       </div>
     )
@@ -25,7 +22,7 @@ export default function PublishedWorksList({ items, type = "works" }: PublishedW
 
   return (
     <div className="divide-y divide-border">
-      {filteredItems.map((item) => (
+      {items.map((item) => ( // Use items directly
         <Link
           key={item.id}
           href={`/${item.type === "poetry" ? "poetry" : item.type === "story" ? "stories" : "articles"}/${item.slug}`}

@@ -127,30 +127,19 @@ export default function ProfilePage({ params }: ProfilePageProps) {
       {/* Pass the profile user object to UserProfile */}
       <UserProfile user={profileUser} />
 
-      {/* Published Works Section - Stories and Poetry */}
+      {/* Published Content Section */}
       <div className="border-t border-border pt-8">
-        <h2 className="mb-6">Published Works</h2>
+        <h2 className="mb-6">Published Content</h2>
         {contentLoading ? (
           <div className="space-y-2">
             <Skeleton className="h-8 w-full" />
             <Skeleton className="h-8 w-full" />
             <Skeleton className="h-8 w-full" />
-          </div>
-        ) : (
-          <PublishedWorksList items={userContent} type="works" />
-        )}
-      </div>
-      
-      {/* Articles Section */}
-      <div className="border-t border-border pt-8">
-        <h2 className="mb-6">Articles</h2>
-        {contentLoading ? (
-          <div className="space-y-2">
-            <Skeleton className="h-8 w-full" />
             <Skeleton className="h-8 w-full" />
           </div>
         ) : (
-          <PublishedWorksList items={userContent} type="article" />
+          // Pass all userContent without filtering by type here
+          <PublishedWorksList items={userContent} /> 
         )}
       </div>
     </div>
