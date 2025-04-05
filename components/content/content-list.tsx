@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import type { Content } from "@/lib/types"
 import { ThumbsUp, MessageSquare } from "lucide-react"
@@ -32,9 +34,16 @@ export default function ContentList({ items, type }: ContentListProps) {
               <div className="flex items-center gap-2 overflow-hidden mb-2">
                 <span className="font-medium text-foreground truncate">{item.title}</span>
                 <span className="text-sm shrink-0">-</span>
-                <Link href={`/profile/${item.author.username}`} className="text-sm font-medium shrink-0 hover:underline">
+                <span 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.location.href = `/profile/${item.author.username}`;
+                  }} 
+                  className="text-sm font-medium shrink-0 hover:underline cursor-pointer"
+                >
                   {item.author.name}
-                </Link>
+                </span>
                 <span className="text-xs text-muted-foreground shrink-0">{new Date(item.createdAt).toLocaleDateString()}</span>
               </div>
               
@@ -55,9 +64,16 @@ export default function ContentList({ items, type }: ContentListProps) {
               <div className="flex items-center gap-2 overflow-hidden">
                 <span className="font-medium text-foreground truncate">{item.title}</span>
                 <span className="text-sm shrink-0">-</span>
-                <Link href={`/profile/${item.author.username}`} className="text-sm font-medium shrink-0 hover:underline" onClick={(e) => e.stopPropagation()}>
+                <span 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.location.href = `/profile/${item.author.username}`;
+                  }} 
+                  className="text-sm font-medium shrink-0 hover:underline cursor-pointer"
+                >
                   {item.author.name}
-                </Link>
+                </span>
                 <span className="text-xs text-muted-foreground shrink-0">{new Date(item.createdAt).toLocaleDateString()}</span>
               </div>
               
