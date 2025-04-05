@@ -6,6 +6,8 @@ import { useState, useEffect } from "react" // Import useEffect
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import { createContent } from "@/lib/data" // Import the createContent function
+import { databases, DATABASES_ID, USER_PROFILES_COLLECTION_ID } from "@/lib/appwrite"
+import { Query } from "appwrite"
 
 export default function WritePage() {
   const { user, loading } = useAuth() // Get loading state
@@ -40,13 +42,26 @@ export default function WritePage() {
     setError("")
 
     try {
+      // Get the user's username from the user profile
+      const userProfileResponse = await databases.listDocuments(
+        DATABASES_ID,
+        USER_PROFILES_COLLECTION_ID,
+        [Query.equal("userId", user.$id)]
+      );
+      
+      // If user profile not found, use user ID as username
+      const username = userProfileResponse.documents.length > 0 
+        ? userProfileResponse.documents[0].username 
+        : user.$id;
+      
       // Use the createContent function to save the content to Appwrite
       const result = await createContent(
         formData.title,
         formData.body,
         formData.category,
         user.$id,
-        user.name || "Anonymous"
+        user.name || "Anonymous",
+        username
       )
 
       if (!result) {

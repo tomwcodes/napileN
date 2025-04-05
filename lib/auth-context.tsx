@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
-import { account } from "./appwrite"; // Import Appwrite account service
+import { account, databases, DATABASES_ID, USER_PROFILES_COLLECTION_ID } from "./appwrite"; // Import Appwrite services and constants
 import { Models, AppwriteException, ID } from "appwrite"; // Import Appwrite types
 
 // Define a type for the user object from Appwrite, picking relevant fields
@@ -12,7 +12,7 @@ interface AuthContextType {
   user: AuthUser;
   loading: boolean; // Add loading state
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  register: (name: string, username: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>; // Make logout async
 }
 
@@ -58,16 +58,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const register = async (name: string, email: string, password: string) => {
+  const register = async (name: string, username: string, email: string, password: string) => {
     setLoading(true);
     try {
       // Create the user account
-      await account.create(ID.unique(), email, password, name);
-      // Optionally log the user in immediately after registration
+      const userId = ID.unique();
+      await account.create(userId, email, password, name);
+      
+      // Create a user profile with the username
+      await databases.createDocument(
+        DATABASES_ID,
+        USER_PROFILES_COLLECTION_ID,
+        userId,
+        {
+          userId: userId,
+          username: username,
+        }
+      );
+      
+      // Log the user in immediately after registration
       await login(email, password);
-      // Or just fetch the user data if login isn't desired right away
-      // const newUser = await account.get();
-      // setUser(newUser);
     } catch (error) {
       console.error("Appwrite registration failed:", error);
       setUser(null); // Ensure user is null on failed registration

@@ -1,4 +1,6 @@
-import { Models } from "appwrite"; // Import Appwrite Models
+import { useState, useEffect } from "react";
+import { Models, Query } from "appwrite"; // Import Appwrite Models
+import { databases, DATABASES_ID, USER_PROFILES_COLLECTION_ID } from "@/lib/appwrite";
 
 interface UserProfileProps {
   user: Models.User<Models.Preferences> | null; // Allow null user
@@ -24,6 +26,31 @@ export default function UserProfile({ user }: UserProfileProps) {
   // Appwrite SDK typically returns ISO string for $createdAt
   const joinedDate = user.$createdAt ? new Date(user.$createdAt).toLocaleDateString() : "N/A";
 
+  // Get username from user profile
+  const [username, setUsername] = useState<string | null>(null);
+  
+  useEffect(() => {
+    async function fetchUsername() {
+      if (!user) return;
+      
+      try {
+        const response = await databases.listDocuments(
+          DATABASES_ID,
+          USER_PROFILES_COLLECTION_ID,
+          [Query.equal("userId", user.$id)]
+        );
+        
+        if (response.documents.length > 0) {
+          setUsername(response.documents[0].username);
+        }
+      } catch (error) {
+        console.error("Error fetching username:", error);
+      }
+    }
+    
+    fetchUsername();
+  }, [user]);
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
@@ -35,8 +62,10 @@ export default function UserProfile({ user }: UserProfileProps) {
         <div>
           {/* Use name */}
           <h1 className="mb-2">{user.name || "Unnamed User"}</h1>
-          {/* Username, bio, etc. are not standard Appwrite fields */}
-          {/* You might fetch extended profile data from a separate Appwrite DB collection later */}
+          {/* Display username */}
+          {username && (
+            <p className="text-muted-foreground">@{username}</p>
+          )}
         </div>
       </div>
 

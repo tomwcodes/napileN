@@ -14,7 +14,7 @@ const mapDocumentToContent = (doc: any): Content => {
     author: {
       id: doc.authorId,
       name: doc.authorName,
-      username: doc.authorId, // Using authorId as username for now
+      username: doc.authorUsername, // Now using authorUsername field
     },
     createdAt: doc.PublishedAt || doc.$createdAt,
     likes: doc.likes || 0, // Use likes from document or default to 0
@@ -239,7 +239,8 @@ export async function createContent(
   body: string,
   type: string,
   authorId: string,
-  authorName: string
+  authorName: string,
+  authorUsername: string
 ): Promise<Content | null> {
   try {
     // Convert type parameter if needed
@@ -256,6 +257,7 @@ export async function createContent(
         type: dbType,
         authorId,
         authorName,
+        authorUsername,
         PublishedAt: new Date().toISOString(),
         likes: 0,
         likedBy: []

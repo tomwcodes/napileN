@@ -9,8 +9,8 @@ import PublishedWorksList from "@/components/profile/published-works-list"
 import UserProfile from "@/components/profile/user-profile"
 import { Skeleton } from "@/components/ui/skeleton" // For loading state
 import type { Content } from "@/lib/types"
-import { account } from "@/lib/appwrite" // Import Appwrite account service
-import { Models } from "appwrite" // Import Appwrite Models
+import { account, databases, DATABASES_ID, USER_PROFILES_COLLECTION_ID } from "@/lib/appwrite" // Import Appwrite services and constants
+import { Models, Query } from "appwrite" // Import Appwrite Models and Query
 
 interface ProfilePageProps {
   params: {
@@ -21,7 +21,7 @@ interface ProfilePageProps {
 export default function ProfilePage({ params }: ProfilePageProps) {
   const { user: authUser, loading: authLoading } = useAuth()
   const router = useRouter()
-  const userIdFromParams = params.username // Rename for clarity
+  const usernameFromParams = params.username // This is now actually the username
   const [userContent, setUserContent] = useState<Content[]>([])
   const [contentLoading, setContentLoading] = useState(true)
   const [profileUser, setProfileUser] = useState<Models.User<Models.Preferences> | null>(null)
@@ -32,16 +32,38 @@ export default function ProfilePage({ params }: ProfilePageProps) {
     async function fetchProfileUser() {
       try {
         setProfileLoading(true)
-        // If the profile is for the current user, use the auth context data
-        if (authUser && authUser.$id === userIdFromParams) {
-          setProfileUser(authUser)
-        } else {
-          // For other users, we'll set profileUser to null initially
-          // We'll rely on the content data to display the profile
+        
+        // Get user profile by username
+        const userProfileResponse = await databases.listDocuments(
+          DATABASES_ID,
+          USER_PROFILES_COLLECTION_ID,
+          [Query.equal("username", usernameFromParams)]
+        );
+        
+        if (userProfileResponse.documents.length === 0) {
+          // No user found with this username
           setProfileUser(null)
+        } else {
+          const userProfile = userProfileResponse.documents[0];
+          const userId = userProfile.userId;
+          
+          // If the profile is for the current user, use the auth context data
+          if (authUser && authUser.$id === userId) {
+            setProfileUser(authUser)
+          } else {
+            // For other users, create a mock user object
+            const mockUser = {
+              $id: userId,
+              name: userProfile.username, // Use username as name if no name is available
+              $createdAt: userProfile.$createdAt,
+            } as unknown as Models.User<Models.Preferences>;
+            
+            setProfileUser(mockUser);
+          }
         }
       } catch (error) {
         console.error("Error fetching profile user:", error)
+        setProfileUser(null)
       } finally {
         setProfileLoading(false)
       }
@@ -50,36 +72,22 @@ export default function ProfilePage({ params }: ProfilePageProps) {
     if (!authLoading) {
       fetchProfileUser()
     }
-  }, [authLoading, authUser, userIdFromParams])
+  }, [authLoading, authUser, usernameFromParams])
 
   // Fetch user content from Appwrite
   useEffect(() => {
     async function fetchUserContent() {
       try {
-        setContentLoading(true)
-        const content = await getUserContent(userIdFromParams)
-        
-        // If we don't have the profile user (for other users), 
-        // create a mock user object from the first content item's author
-        if (!profileUser && content.length > 0) {
-          const firstContent = content[0];
-          const mockUser = {
-            $id: userIdFromParams,
-            name: firstContent.author.name,
-            $createdAt: firstContent.createdAt,
-          } as unknown as Models.User<Models.Preferences>;
-          
-          setProfileUser(mockUser);
+        if (!profileUser) {
+          setContentLoading(false)
+          return;
         }
         
+        setContentLoading(true)
+        const content = await getUserContent(profileUser.$id)
         setUserContent(content)
       } catch (error) {
         console.error("Error fetching user content:", error)
-        
-        // If we can't fetch content and we don't have a profile user, show not found
-        if (!profileUser) {
-          notFound();
-        }
       } finally {
         setContentLoading(false)
       }
@@ -88,7 +96,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
     if (!profileLoading) {
       fetchUserContent()
     }
-  }, [profileLoading, profileUser, userIdFromParams])
+  }, [profileLoading, profileUser])
 
   // Show loading state while data is being fetched
   if (authLoading || profileLoading) {

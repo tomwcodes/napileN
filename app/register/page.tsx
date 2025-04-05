@@ -12,6 +12,7 @@ export default function RegisterPage() {
   const { register } = useAuth()
   const [formData, setFormData] = useState({
     name: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -27,8 +28,15 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!formData.name.trim() || !formData.email.trim() || !formData.password.trim()) {
+    if (!formData.name.trim() || !formData.username.trim() || !formData.email.trim() || !formData.password.trim()) {
       setError("All fields are required")
+      return
+    }
+
+    // Validate username format (alphanumeric and underscores only)
+    const usernameRegex = /^[a-zA-Z0-9_]+$/;
+    if (!usernameRegex.test(formData.username)) {
+      setError("Username can only contain letters, numbers, and underscores")
       return
     }
 
@@ -41,7 +49,7 @@ export default function RegisterPage() {
     setError("")
 
     try {
-      await register(formData.name, formData.email, formData.password);
+      await register(formData.name, formData.username, formData.email, formData.password);
       // The register function in AuthContext now handles login automatically
       router.push("/"); // Redirect to home on successful registration + login
     } catch (err: any) { // Use 'any' or check type more specifically
@@ -78,6 +86,25 @@ export default function RegisterPage() {
             placeholder="Your name"
             required
           />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="username" className="form-label">
+            Username
+          </label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            className="form-input"
+            placeholder="username123"
+            required
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            Only letters, numbers, and underscores allowed
+          </p>
         </div>
 
         <div className="form-group">

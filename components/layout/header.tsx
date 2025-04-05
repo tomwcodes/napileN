@@ -1,9 +1,11 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { usePathname } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
+import { databases, DATABASES_ID, USER_PROFILES_COLLECTION_ID } from "@/lib/appwrite"
+import { Query } from "appwrite"
 import { Menu, X, User, LogOut, Search } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -21,6 +23,38 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
+  const [username, setUsername] = useState<string | null>(null)
+  
+  // Fetch the user's username when the user changes
+  useEffect(() => {
+    async function fetchUsername() {
+      if (!user) {
+        setUsername(null)
+        return
+      }
+      
+      try {
+        const response = await databases.listDocuments(
+          DATABASES_ID,
+          USER_PROFILES_COLLECTION_ID,
+          [Query.equal("userId", user.$id)]
+        )
+        
+        if (response.documents.length > 0) {
+          setUsername(response.documents[0].username)
+        } else {
+          // Fallback to user ID if no username is found
+          setUsername(user.$id)
+        }
+      } catch (error) {
+        console.error("Error fetching username:", error)
+        // Fallback to user ID if there's an error
+        setUsername(user.$id)
+      }
+    }
+    
+    fetchUsername()
+  }, [user])
   
   // Function to get user initials for avatar fallback
   const getUserInitials = () => {
@@ -112,7 +146,7 @@ export default function Header() {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href={`/profile/${user.$id}`} className="cursor-pointer flex w-full items-center">
+                    <Link href={`/profile/${username || user.$id}`} className="cursor-pointer flex w-full items-center">
                       <User className="mr-2 h-4 w-4" />
                       Profile
                     </Link>
@@ -179,7 +213,7 @@ export default function Header() {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href={`/profile/${user.$id}`} className="cursor-pointer flex w-full items-center">
+                    <Link href={`/profile/${username || user.$id}`} className="cursor-pointer flex w-full items-center">
                       <User className="mr-2 h-4 w-4" />
                       Profile
                     </Link>

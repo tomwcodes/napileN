@@ -5,6 +5,8 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useAuth } from "@/lib/auth-context"
 import { getCommentsByContentId } from "@/lib/data"
+import { databases, DATABASES_ID, USER_PROFILES_COLLECTION_ID } from "@/lib/appwrite"
+import { Query } from "appwrite"
 import CommentItem from "./comment-item"
 import type { Comment } from "@/lib/types"
 
@@ -17,6 +19,38 @@ export default function CommentSection({ contentId }: CommentSectionProps) {
   const [comment, setComment] = useState("")
   const [comments, setComments] = useState<Comment[]>([])
   const [loading, setLoading] = useState(true)
+  const [username, setUsername] = useState<string | null>(null)
+  
+  // Fetch the user's username when the user changes
+  useEffect(() => {
+    async function fetchUsername() {
+      if (!user) {
+        setUsername(null)
+        return
+      }
+      
+      try {
+        const response = await databases.listDocuments(
+          DATABASES_ID,
+          USER_PROFILES_COLLECTION_ID,
+          [Query.equal("userId", user.$id)]
+        )
+        
+        if (response.documents.length > 0) {
+          setUsername(response.documents[0].username)
+        } else {
+          // Fallback to user ID if no username is found
+          setUsername(user.$id)
+        }
+      } catch (error) {
+        console.error("Error fetching username:", error)
+        // Fallback to user ID if there's an error
+        setUsername(user.$id)
+      }
+    }
+    
+    fetchUsername()
+  }, [user])
 
   useEffect(() => {
     async function fetchComments() {
@@ -51,7 +85,7 @@ export default function CommentSection({ contentId }: CommentSectionProps) {
       author: {
         id: user.$id || "anonymous",
         name: user.name || "Anonymous",
-        username: user.$id || "anonymous",
+        username: username || user.$id || "anonymous",
       },
       body: comment,
       createdAt: new Date().toISOString(),
