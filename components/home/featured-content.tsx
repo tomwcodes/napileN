@@ -61,9 +61,7 @@ export default function FeaturedContent({ recentContent, mostReadContent }: Feat
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-3xl font-semibold">Featured Content</h2>
-          <Link href="/all-featured" className="text-sm text-red-600 hover:text-red-800 font-medium">
-            View all
-          </Link>
+          {/* View all link removed */}
         </div>
 
         <Tabs defaultValue="recent" value={activeTab} onValueChange={setActiveTab} className="w-full">
