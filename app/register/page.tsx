@@ -53,9 +53,16 @@ export default function RegisterPage() {
       // The register function in AuthContext now handles login automatically
       router.push("/"); // Redirect to home on successful registration + login
     } catch (err: any) { // Use 'any' or check type more specifically
-      // Check if it's an Appwrite exception and use its message
+      // Check for specific Appwrite error messages
       if (err?.message) {
-        setError(err.message);
+        if (err.message.includes("A user with the same id, email, or phone already exists")) {
+          setError("This email is already registered.");
+        } else if (err.message.includes("Username is already taken")) {
+           setError("Username is already taken. Please choose another one."); // Keep existing username message
+        }
+        else {
+          setError(err.message); // Use the original message for other errors
+        }
       } else {
         setError("An unexpected error occurred during registration.");
       }
