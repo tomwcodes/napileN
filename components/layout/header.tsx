@@ -58,13 +58,12 @@ export default function Header() {
   
   // Function to get user initials for avatar fallback
   const getUserInitials = () => {
-    if (!user || !user.name) return "U"
-    return user.name
-      .split(" ")
-      .map(part => part[0])
-      .join("")
-      .toUpperCase()
-      .substring(0, 2)
+    // Use the fetched username if available, otherwise default
+    if (username && username.length > 0) {
+      return username[0].toUpperCase();
+    }
+    // Fallback if username is not yet loaded or empty
+    return "U"; 
   }
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen)

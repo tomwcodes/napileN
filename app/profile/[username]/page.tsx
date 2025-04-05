@@ -154,7 +154,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
       {/* Blog Section */}
       <div className="border-t border-border pt-8">
         <h2 className="mb-6">Blog</h2>
-        <p className="text-muted-foreground">Coming soon,</p>
+        <p className="text-muted-foreground">Coming soon.</p>
       </div>
     </div>
   )
