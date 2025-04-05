@@ -11,7 +11,6 @@ export default function RegisterPage() {
   const router = useRouter()
   const { register } = useAuth()
   const [formData, setFormData] = useState({
-    name: "",
     username: "",
     email: "",
     password: "",
@@ -28,7 +27,7 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!formData.name.trim() || !formData.username.trim() || !formData.email.trim() || !formData.password.trim()) {
+    if (!formData.username.trim() || !formData.email.trim() || !formData.password.trim()) {
       setError("All fields are required")
       return
     }
@@ -49,7 +48,8 @@ export default function RegisterPage() {
     setError("")
 
     try {
-      await register(formData.name, formData.username, formData.email, formData.password);
+      // Note: The register function signature needs to be updated in auth-context.tsx as well
+      await register(formData.username, formData.email, formData.password);
       // The register function in AuthContext now handles login automatically
       router.push("/"); // Redirect to home on successful registration + login
     } catch (err: any) { // Use 'any' or check type more specifically
@@ -72,22 +72,6 @@ export default function RegisterPage() {
       {error && <div className="bg-red-50 border border-red-200 text-red-800 p-4 mb-6 rounded-sm">{error}</div>}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="form-group">
-          <label htmlFor="name" className="form-label">
-            Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="form-input"
-            placeholder="Your name"
-            required
-          />
-        </div>
-
         <div className="form-group">
           <label htmlFor="username" className="form-label">
             Username

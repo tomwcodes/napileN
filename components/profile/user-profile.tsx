@@ -55,17 +55,14 @@ export default function UserProfile({ user }: UserProfileProps) {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
         <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center text-3xl font-serif">
-          {/* Use name, handle potential null/undefined */}
-          {user.name ? user.name.charAt(0) : "?"}
+          {/* Use first letter of username for avatar, fallback if loading/null */}
+          {username ? username.charAt(0).toUpperCase() : "?"}
         </div>
 
         <div>
-          {/* Use name */}
-          <h1 className="mb-2">{user.name || "Unnamed User"}</h1>
-          {/* Display username */}
-          {username && (
-            <p className="text-muted-foreground">@{username}</p>
-          )}
+          {/* Display username prominently */}
+          <h1 className="mb-2">{username || "Loading..."}</h1>
+          {/* Removed separate username display */}
         </div>
       </div>
 
