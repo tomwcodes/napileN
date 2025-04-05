@@ -33,7 +33,7 @@ export default function RootLayout({
         <AuthProvider>
           <Header />
           <main className="flex-1 container mx-auto px-4 py-8">{children}</main>
-          <Footer />
+          {/* <Footer /> */}
         </AuthProvider>
       </body>
     </html>
