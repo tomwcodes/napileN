@@ -12,7 +12,7 @@ export default function Footer() {
             <p className="text-muted-foreground">The platform for publishing and discovering poetry and stories.</p>
           </div>
 
-          <div>
+          {/* <div>
             <h3 className="text-lg font-semibold mb-4">Navigation</h3>
             <ul className="space-y-2">
               <li>
@@ -36,7 +36,7 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
-          </div>
+          </div> */}
 
           {/* <div>
             <h3 className="text-lg font-semibold mb-4">Legal</h3>
