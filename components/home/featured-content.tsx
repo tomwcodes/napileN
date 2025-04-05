@@ -2,9 +2,10 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { Heart, MessageCircle } from 'lucide-react' // Import icons
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card' // Assuming Card components exist
-import type { Content } from '@/lib/types' // Import the Content type
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import type { Content } from '@/lib/types'
 
 interface FeaturedContentProps {
   recentContent: Content[]
@@ -28,6 +29,17 @@ const ContentCard = ({ content }: { content: Content }) => (
           <span>By {content.author.name}</span>
           <span>·</span>
           <span>{new Date(content.createdAt).toLocaleDateString()}</span>
+        </div>
+        {/* Add Likes and Comments */}
+        <div className="flex items-center gap-4 text-xs text-muted-foreground mt-3">
+          <span className="flex items-center gap-1">
+            <Heart className="w-3.5 h-3.5" />
+            {content.likes}
+          </span>
+          <span className="flex items-center gap-1">
+            <MessageCircle className="w-3.5 h-3.5" />
+            {content.comments?.length || 0} {/* Use optional chaining and default to 0 */}
+          </span>
         </div>
       </CardContent>
     </Card>
