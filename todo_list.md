@@ -13,3 +13,4 @@ Here are the next steps to fully integrate Appwrite and enhance the application:
 - saved posts
 - search bar working
 - your blog installation
+- you may also like section

@@ -53,7 +53,7 @@ export default function UserProfile({ user }: UserProfileProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
+      <div className="flex flex-row gap-6 items-center">
         <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center text-3xl font-serif">
           {/* Use first letter of username for avatar, fallback if loading/null */}
           {username ? username.charAt(0).toUpperCase() : "?"}

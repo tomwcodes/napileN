@@ -16,7 +16,7 @@ export default function ContentDetail({ content }: ContentDetailProps) {
       <h1 className="mb-4">{content.title}</h1>
 
       <div className="flex items-center gap-2 text-muted-foreground">
-        <Link href={`/profile/${content.author.username}`} className="font-medium text-foreground">
+        <Link href={`/profile/${content.author.username}`} className="font-medium text-accent">
           {content.author.name}
         </Link>
         <span className="text-sm">{new Date(content.createdAt).toLocaleDateString()}</span>
