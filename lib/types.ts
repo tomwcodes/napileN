@@ -22,6 +22,7 @@ export interface Content {
   }
   createdAt: string
   likes: number
+  likedBy: string[]
   featured: boolean
   comments: Comment[]
 }
@@ -37,4 +38,3 @@ export interface Comment {
   body: string
   createdAt: string
 }
-

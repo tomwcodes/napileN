@@ -17,7 +17,8 @@ const mapDocumentToContent = (doc: any): Content => {
       username: doc.authorId, // Using authorId as username for now
     },
     createdAt: doc.PublishedAt || doc.$createdAt,
-    likes: 0, // Default value, could be updated later
+    likes: doc.likes || 0, // Use likes from document or default to 0
+    likedBy: doc.likedBy || [], // Use likedBy from document or default to empty array
     featured: false, // Default value, could be updated later
     comments: [], // Default empty array, could be fetched separately
   };
@@ -255,7 +256,9 @@ export async function createContent(
         type: dbType,
         authorId,
         authorName,
-        PublishedAt: new Date().toISOString()
+        PublishedAt: new Date().toISOString(),
+        likes: 0,
+        likedBy: []
       }
     );
     
@@ -263,5 +266,85 @@ export async function createContent(
   } catch (error) {
     console.error("Error creating content:", error);
     return null;
+  }
+}
+
+// Like content
+export async function likeContent(contentId: string, userId: string): Promise<boolean> {
+  try {
+    // First, get the current document
+    const document = await databases.getDocument(
+      DATABASES_ID,
+      CONTENT_COLLECTION_ID,
+      contentId
+    );
+    
+    // Get current likes and likedBy array
+    const currentLikes = document.likes || 0;
+    const likedBy = document.likedBy || [];
+    
+    // Check if user already liked this content
+    if (likedBy.includes(userId)) {
+      return false; // User already liked this content
+    }
+    
+    // Add user to likedBy array and increment likes
+    likedBy.push(userId);
+    
+    // Update the document
+    await databases.updateDocument(
+      DATABASES_ID,
+      CONTENT_COLLECTION_ID,
+      contentId,
+      {
+        likes: currentLikes + 1,
+        likedBy: likedBy
+      }
+    );
+    
+    return true;
+  } catch (error) {
+    console.error("Error liking content:", error);
+    return false;
+  }
+}
+
+// Unlike content
+export async function unlikeContent(contentId: string, userId: string): Promise<boolean> {
+  try {
+    // First, get the current document
+    const document = await databases.getDocument(
+      DATABASES_ID,
+      CONTENT_COLLECTION_ID,
+      contentId
+    );
+    
+    // Get current likes and likedBy array
+    const currentLikes = document.likes || 0;
+    const likedBy = document.likedBy || [];
+    
+    // Check if user has liked this content
+    if (!likedBy.includes(userId)) {
+      return false; // User hasn't liked this content
+    }
+    
+    // Remove user from likedBy array and decrement likes
+    const updatedLikedBy = likedBy.filter((id: string) => id !== userId);
+    
+    // Update the document
+    await databases.updateDocument(
+      DATABASES_ID,
+      CONTENT_COLLECTION_ID,
+      contentId,
+      {
+        likes: Math.max(0, currentLikes - 1), // Ensure likes doesn't go below 0
+        likedBy: updatedLikedBy
+      }
+    );
+    
+    return true;
+  } catch (error) {
+    console.error("Error unliking content:", error);
+    return false;
   }
 }
