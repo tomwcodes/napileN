@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import { account, databases, DATABASES_ID, USER_PROFILES_COLLECTION_ID } from "./appwrite"; // Import Appwrite services and constants
-import { Models, AppwriteException, ID } from "appwrite"; // Import Appwrite types
+import { Models, AppwriteException, ID, Query } from "appwrite"; // Import Appwrite types and Query
 
 // Define a type for the user object from Appwrite, picking relevant fields
 // Or use Models.User directly if you need all fields
@@ -61,11 +61,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (name: string, username: string, email: string, password: string) => {
     setLoading(true);
     try {
-      // Create the user account
+      // 1. Check if username already exists in the user_profiles collection
+      const existingProfiles = await databases.listDocuments(
+        DATABASES_ID,
+        USER_PROFILES_COLLECTION_ID,
+        [Query.equal("username", username)]
+      );
+
+      if (existingProfiles.total > 0) {
+        throw new Error("Username is already taken. Please choose another one.");
+      }
+
+      // 2. Create the user account if username is unique
       const userId = ID.unique();
       await account.create(userId, email, password, name);
       
-      // Create a user profile with the username
+      // 3. Create a user profile with the username
       await databases.createDocument(
         DATABASES_ID,
         USER_PROFILES_COLLECTION_ID,
