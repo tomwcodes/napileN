@@ -6,9 +6,9 @@ export default function Footer() {
   return (
     <footer className="border-t border-border py-8 mt-12">
       <div className="container mx-auto px-4">
-        {/* Added flex justify-center to center the single active grid item */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 flex justify-center">
-          {/* Added text-center to center the content within this div */}
+        {/* Removed grid layout to allow full-width centering */}
+        <div className="mb-8"> {/* Added margin-bottom for spacing */}
+          {/* Kept text-center to center the content within the container */}
           <div className="text-center">
             <h3 className="text-lg font-semibold mb-4">Verse</h3>
             <p className="text-muted-foreground">The platform for publishing and discovering poetry and stories.</p>

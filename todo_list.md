@@ -10,3 +10,6 @@ Here are the next steps to fully integrate Appwrite and enhance the application:
 - indexing in appwrite
 - ability to sort by most recent etc.
 - comments section
+- saved posts
+- search bar
+- blog?
