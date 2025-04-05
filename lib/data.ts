@@ -2,7 +2,7 @@ import type { User, Content, Comment } from "./types";
 import { databases, DATABASES_ID, CONTENT_COLLECTION_ID, USER_PROFILES_COLLECTION_ID } from "./appwrite";
 
 // Define the Comments collection ID
-export const COMMENTS_COLLECTION_ID = "67ef94e80005b889897b"; // Replace with your actual collection ID
+export const COMMENTS_COLLECTION_ID = "67f123d0002c7cc677f8"; // Correct collection ID
 import { Query, ID } from "appwrite";
 
 // Helper function to convert Appwrite document to Content type
