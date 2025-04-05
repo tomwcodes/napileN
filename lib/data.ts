@@ -190,8 +190,14 @@ export async function getContentBySlug(type: string, slug: string): Promise<Cont
     
     // Check if the document type matches the requested type
     const docType = document.type;
-    const requestedType = type === "stories" ? "story" : type;
-    
+    // Convert plural URL types ("stories", "articles") to singular DB types ("story", "article")
+    let requestedType = type;
+    if (type === "stories") {
+      requestedType = "story";
+    } else if (type === "articles") {
+      requestedType = "article";
+    }
+
     if (docType !== requestedType) {
       return null;
     }
