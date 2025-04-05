@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useState } from "react"
 import { usePathname } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
-import { Menu, X, User, LogOut } from "lucide-react"
+import { Menu, X, User, LogOut, Search } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -19,6 +19,8 @@ export default function Header() {
   const pathname = usePathname()
   const { user, logout } = useAuth()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("")
   
   // Function to get user initials for avatar fallback
   const getUserInitials = () => {
@@ -79,6 +81,17 @@ export default function Header() {
 
           {/* Auth Links/Buttons - Column 3 */}
           <div className="col-span-1 flex justify-end items-center gap-6">
+            {/* Desktop Search Bar */}
+            <form onSubmit={(e) => e.preventDefault()} className="relative w-48">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="form-input pl-10 py-1 w-full text-sm rounded-md border border-gray-300 focus:border-red-900 focus:ring-1 focus:ring-red-900"
+              />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
+            </form>
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -138,6 +151,15 @@ export default function Header() {
           
           {/* Mobile right side controls */}
           <div className="flex items-center gap-3">
+            {/* Mobile Search Icon/Button */}
+            <button 
+              onClick={() => setIsSearchOpen(!isSearchOpen)} 
+              className="p-1 text-gray-600 hover:text-red-900"
+              aria-label="Toggle search"
+            >
+              <Search size={20} />
+            </button>
+            
             {/* User Avatar (if logged in) */}
             {user && (
               <DropdownMenu>
@@ -176,6 +198,23 @@ export default function Header() {
             </button>
           </div>
         </div>
+
+        {/* Mobile Search Bar - Collapsible */}
+        {isSearchOpen && (
+          <div className="md:hidden mt-4 pt-4 border-t border-gray-100">
+            <form onSubmit={(e) => e.preventDefault()} className="relative">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="form-input pl-10 py-2 w-full text-sm rounded-md border border-gray-300 focus:border-red-900 focus:ring-1 focus:ring-red-900"
+                autoFocus
+              />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
+            </form>
+          </div>
+        )}
 
         {/* Mobile Navigation Menu */}
         {isMenuOpen && (

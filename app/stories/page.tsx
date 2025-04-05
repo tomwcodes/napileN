@@ -1,6 +1,5 @@
 import Link from "next/link"
 import ContentList from "@/components/content/content-list"
-import ContentFilter from "@/components/content/content-filter"
 import { getStories } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 
@@ -22,8 +21,6 @@ export default async function StoriesPage() {
           </div>
         </div>
       </div>
-
-      <ContentFilter />
 
       <ContentList items={stories} type="story" />
     </div>
