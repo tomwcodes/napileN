@@ -25,6 +25,7 @@ export interface Content {
   likedBy: string[]
   featured: boolean
   comments: Comment[]
+  commentCount?: number
 }
 
 export interface Comment {

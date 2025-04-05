@@ -1,6 +1,7 @@
 import Link from "next/link"
 import type { Content } from "@/lib/types"
 import ContentActions from "./content-actions"
+import { MessageSquare } from "lucide-react"
 
 interface ContentDetailProps {
   content: Content
@@ -24,7 +25,14 @@ export default function ContentDetail({ content }: ContentDetailProps) {
 
       <div className="prose max-w-none py-6 whitespace-pre-line">{content.body}</div>
 
-      <ContentActions content={content} />
+      <div className="flex items-center gap-4">
+        <ContentActions content={content} />
+        
+        <div className="flex items-center gap-1 text-muted-foreground">
+          <MessageSquare size={16} />
+          <span>{content.commentCount || 0}</span>
+        </div>
+      </div>
     </article>
   )
 }

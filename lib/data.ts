@@ -1,5 +1,8 @@
 import type { User, Content, Comment } from "./types";
 import { databases, DATABASES_ID, CONTENT_COLLECTION_ID, USER_PROFILES_COLLECTION_ID } from "./appwrite";
+
+// Define the Comments collection ID
+export const COMMENTS_COLLECTION_ID = "67ef94e80005b889897b"; // Replace with your actual collection ID
 import { Query, ID } from "appwrite";
 
 // Helper function to convert Appwrite document to Content type
@@ -21,6 +24,7 @@ const mapDocumentToContent = (doc: any): Content => {
     likedBy: doc.likedBy || [], // Use likedBy from document or default to empty array
     featured: false, // Default value, could be updated later
     comments: [], // Default empty array, could be fetched separately
+    commentCount: doc.commentCount || 0, // Use commentCount from document or default to 0
   };
 };
 
@@ -209,10 +213,104 @@ export async function getContentBySlug(type: string, slug: string): Promise<Cont
   }
 }
 
-// Get comments by content ID (not implemented in Appwrite yet)
+// Helper function to convert Appwrite document to Comment type
+const mapDocumentToComment = (doc: any): Comment => {
+  return {
+    id: doc.$id,
+    contentId: doc.contentId,
+    author: {
+      id: doc.userId,
+      name: doc.username || "Anonymous",
+      username: doc.username || "anonymous",
+    },
+    body: doc.commentBody,
+    createdAt: doc.createdAt || doc.$createdAt,
+  };
+};
+
+// Get comments by content ID
 export async function getCommentsByContentId(contentId: string): Promise<Comment[]> {
-  // Comments are not stored in a separate collection yet
-  return [];
+  try {
+    const response = await databases.listDocuments(
+      DATABASES_ID,
+      COMMENTS_COLLECTION_ID,
+      [
+        Query.equal("contentId", contentId),
+        Query.orderDesc("createdAt") // Show newest comments first
+      ]
+    );
+    
+    return response.documents.map(mapDocumentToComment);
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    return [];
+  }
+}
+
+// Create a new comment
+export async function createComment(
+  contentId: string,
+  userId: string,
+  username: string,
+  commentBody: string
+): Promise<Comment | null> {
+  try {
+    // Create the comment document in Appwrite
+    const now = new Date().toISOString();
+    const response = await databases.createDocument(
+      DATABASES_ID,
+      COMMENTS_COLLECTION_ID,
+      ID.unique(),
+      {
+        contentId,
+        userId,
+        username,
+        commentBody,
+        createdAt: now
+      }
+    );
+    
+    // Update the comment count in the content document
+    await updateCommentCount(contentId);
+    
+    return mapDocumentToComment(response);
+  } catch (error) {
+    console.error("Error creating comment:", error);
+    return null;
+  }
+}
+
+// Update the comment count for a content item
+async function updateCommentCount(contentId: string): Promise<void> {
+  try {
+    // Get the current content document
+    const contentDoc = await databases.getDocument(
+      DATABASES_ID,
+      CONTENT_COLLECTION_ID,
+      contentId
+    );
+    
+    // Count the comments for this content
+    const commentsResponse = await databases.listDocuments(
+      DATABASES_ID,
+      COMMENTS_COLLECTION_ID,
+      [Query.equal("contentId", contentId)]
+    );
+    
+    const commentCount = commentsResponse.total;
+    
+    // Update the content document with the new comment count
+    await databases.updateDocument(
+      DATABASES_ID,
+      CONTENT_COLLECTION_ID,
+      contentId,
+      {
+        commentCount: commentCount
+      }
+    );
+  } catch (error) {
+    console.error("Error updating comment count:", error);
+  }
 }
 
 // Get related content

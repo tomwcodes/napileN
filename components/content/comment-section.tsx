@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import { useAuth } from "@/lib/auth-context"
-import { getCommentsByContentId } from "@/lib/data"
+import { getCommentsByContentId, createComment } from "@/lib/data"
 import { databases, DATABASES_ID, USER_PROFILES_COLLECTION_ID } from "@/lib/appwrite"
 import { Query } from "appwrite"
 import CommentItem from "./comment-item"
@@ -68,7 +68,7 @@ export default function CommentSection({ contentId }: CommentSectionProps) {
     fetchComments()
   }, [contentId])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!user) {
@@ -78,30 +78,36 @@ export default function CommentSection({ contentId }: CommentSectionProps) {
 
     if (!comment.trim()) return
 
-    // This would be replaced with Appwrite SDK in phase 2
-    const newComment: Comment = {
-      id: Date.now().toString(),
-      contentId,
-      author: {
-        id: user.$id || "anonymous",
-        name: user.name || "Anonymous",
-        username: username || user.$id || "anonymous",
-      },
-      body: comment,
-      createdAt: new Date().toISOString(),
-    }
+    setLoading(true)
+    try {
+      const newComment = await createComment(
+        contentId,
+        user.$id,
+        username || user.$id,
+        comment.trim()
+      )
 
-    setComments([newComment, ...comments])
-    setComment("")
+      if (newComment) {
+        setComments([newComment, ...comments])
+        setComment("")
+      }
+    } catch (error) {
+      console.error("Error creating comment:", error)
+      alert("Failed to post comment. Please try again.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <section className="space-y-6">
       <div>
         <h2>Comments ({comments.length})</h2>
-        {comments.length === 0 && (
+        {loading && comments.length === 0 ? (
+          <p className="text-muted-foreground mt-2">Loading comments...</p>
+        ) : comments.length === 0 ? (
           <p className="text-muted-foreground mt-2">No comments yet. Be the first to comment!</p>
-        )}
+        ) : null}
       </div>
 
       {user ? (
@@ -115,8 +121,12 @@ export default function CommentSection({ contentId }: CommentSectionProps) {
           />
 
           <div>
-            <button type="submit" className="bg-red-900 text-white px-4 py-2 rounded hover:bg-red-950 transition-colors">
-              Post Comment
+            <button 
+              type="submit" 
+              disabled={loading}
+              className={`bg-red-900 text-white px-4 py-2 rounded hover:bg-red-950 transition-colors ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              {loading ? 'Posting...' : 'Post Comment'}
             </button>
           </div>
         </form>
