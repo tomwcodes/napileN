@@ -238,8 +238,8 @@ export async function createContent(
   title: string,
   body: string,
   type: string,
-  authorId: string,
-  authorName: string,
+  userId: string,
+  username: string,
   authorUsername: string
 ): Promise<Content | null> {
   try {
@@ -255,8 +255,7 @@ export async function createContent(
         title,
         body,
         type: dbType,
-        userId: authorId,
-        authorName,
+        userId: userId,
         username: authorUsername,
         PublishedAt: new Date().toISOString(),
         likes: 0,
