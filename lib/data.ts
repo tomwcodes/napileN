@@ -12,9 +12,9 @@ const mapDocumentToContent = (doc: any): Content => {
     excerpt: doc.body.substring(0, 150) + "...", // Generate excerpt from body
     type: doc.type,
     author: {
-      id: doc.authorId,
-      name: doc.authorName,
-      username: doc.authorUsername, // Now using authorUsername field
+      id: doc.userId,
+      name: doc.authorName || doc.username, // Use authorName if available, otherwise use username
+      username: doc.username, // Using username field from schema
     },
     createdAt: doc.PublishedAt || doc.$createdAt,
     likes: doc.likes || 0, // Use likes from document or default to 0
@@ -168,7 +168,7 @@ export async function getUserContent(userId: string): Promise<Content[]> {
     const response = await databases.listDocuments(
       DATABASES_ID,
       CONTENT_COLLECTION_ID,
-      [Query.equal("authorId", userId)]
+      [Query.equal("userId", userId)]
     );
     
     return response.documents.map(mapDocumentToContent);
@@ -255,9 +255,9 @@ export async function createContent(
         title,
         body,
         type: dbType,
-        authorId,
+        userId: authorId,
         authorName,
-        authorUsername,
+        username: authorUsername,
         PublishedAt: new Date().toISOString(),
         likes: 0,
         likedBy: []
