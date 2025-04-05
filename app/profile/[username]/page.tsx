@@ -139,8 +139,14 @@ export default function ProfilePage({ params }: ProfilePageProps) {
           </div>
         ) : (
           // Pass all userContent without filtering by type here
-          <PublishedWorksList items={userContent} /> 
+          <PublishedWorksList items={userContent} />
         )}
+      </div>
+
+      {/* Blog Section */}
+      <div className="border-t border-border pt-8">
+        <h2 className="mb-6">Blog</h2>
+        <p className="text-muted-foreground">Coming soon,</p>
       </div>
     </div>
   )
