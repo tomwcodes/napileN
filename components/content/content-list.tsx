@@ -44,18 +44,21 @@ export default function ContentList({ items, type }: ContentListProps) {
                 >
                   {item.author.name}
                 </span>
-                <span className="text-xs text-muted-foreground shrink-0">{new Date(item.createdAt).toLocaleDateString()}</span>
               </div>
               
-              <div className="flex items-center gap-4 self-end">
-                <div className="flex items-center gap-1 text-muted-foreground">
-                  <ThumbsUp size={14} />
-                  <span className="text-xs">{item.likes}</span>
-                </div>
+              <div className="flex items-center justify-between w-full">
+                <span className="text-xs text-muted-foreground">{new Date(item.createdAt).toLocaleDateString()}</span>
+                
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1 text-muted-foreground">
+                    <ThumbsUp size={14} />
+                    <span className="text-xs">{item.likes}</span>
+                  </div>
 
-                <div className="flex items-center gap-1 text-muted-foreground">
-                  <MessageSquare size={14} />
-                  <span className="text-xs">{item.comments.length}</span>
+                  <div className="flex items-center gap-1 text-muted-foreground">
+                    <MessageSquare size={14} />
+                    <span className="text-xs">{item.comments.length}</span>
+                  </div>
                 </div>
               </div>
             </>
