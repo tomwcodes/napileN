@@ -13,7 +13,7 @@ const mapDocumentToContent = (doc: any): Content => {
     type: doc.type,
     author: {
       id: doc.userId,
-      name: doc.authorName || doc.username, // Use authorName if available, otherwise use username
+      name: doc.username, // Use authorName if available, otherwise use username
       username: doc.username, // Using username field from schema
     },
     createdAt: doc.PublishedAt || doc.$createdAt,
