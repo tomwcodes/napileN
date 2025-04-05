@@ -25,21 +25,22 @@ const ContentCard = ({ content }: { content: Content }) => (
       </CardHeader>
       <CardContent className="flex-grow">
         <p className="text-sm text-muted-foreground mb-3 line-clamp-3">{content.excerpt}</p>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span>By {content.author.name}</span>
-          <span>·</span>
-          <span>{new Date(content.createdAt).toLocaleDateString()}</span>
-        </div>
-        {/* Add Likes and Comments */}
-        <div className="flex items-center gap-4 text-xs text-muted-foreground mt-3">
-          <span className="flex items-center gap-1">
-            <Heart className="w-3.5 h-3.5" />
-            {content.likes}
-          </span>
-          <span className="flex items-center gap-1">
-            <MessageCircle className="w-3.5 h-3.5" />
-            {content.comments?.length || 0} {/* Use optional chaining and default to 0 */}
-          </span>
+        <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto pt-2"> {/* Use justify-between and mt-auto pt-2 */}
+          <div className="flex items-center gap-2"> {/* Group author and date */}
+            <span>By {content.author.name}</span>
+            <span>·</span>
+            <span>{new Date(content.createdAt).toLocaleDateString()}</span>
+          </div>
+          <div className="flex items-center gap-3"> {/* Group likes and comments */}
+            <span className="flex items-center gap-1">
+              <Heart className="w-3.5 h-3.5" />
+              {content.likes}
+            </span>
+            <span className="flex items-center gap-1">
+              <MessageCircle className="w-3.5 h-3.5" />
+              {content.comments?.length || 0} {/* Use optional chaining and default to 0 */}
+            </span>
+          </div>
         </div>
       </CardContent>
     </Card>
