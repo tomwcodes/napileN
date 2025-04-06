@@ -110,6 +110,12 @@ export default function CommentSection({ contentId }: CommentSectionProps) {
         ) : null}
       </div>
 
+      <div className="space-y-6 mt-6">
+        {comments.length > 0 && (
+          comments.map((comment) => <CommentItem key={comment.id} comment={comment} />)
+        )}
+      </div>
+
       {user ? (
         <form onSubmit={handleSubmit} className="mt-6 mb-2 w-full max-w-2xl">
           <textarea
@@ -143,12 +149,6 @@ export default function CommentSection({ contentId }: CommentSectionProps) {
           </div>
         </div>
       )}
-
-      <div className="space-y-6 mt-6">
-        {comments.length > 0 && (
-          comments.map((comment) => <CommentItem key={comment.id} comment={comment} />)
-        )}
-      </div>
     </section>
   )
 }
