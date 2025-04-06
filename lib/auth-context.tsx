@@ -12,7 +12,8 @@ interface AuthContextType {
   user: AuthUser;
   loading: boolean; // Add loading state
   login: (email: string, password: string) => Promise<void>;
-  register: (username: string, email: string, password: string) => Promise<void>;
+  // Updated register signature
+  register: (firstName: string, lastName: string, username: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>; // Make logout async
 }
 
@@ -58,7 +59,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const register = async (username: string, email: string, password: string) => {
+  // Updated register function to accept firstName and lastName
+  const register = async (firstName: string, lastName: string, username: string, email: string, password: string) => {
     setLoading(true);
     try {
       // 1. Check if username already exists in the user_profiles collection
@@ -77,14 +79,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const userId = ID.unique();
       await account.create(userId, email, password); 
       
-      // 3. Create a user profile with the username
+      // 3. Create a user profile with firstName, lastName, and username
       await databases.createDocument(
         DATABASES_ID,
-        USER_PROFILES_COLLECTION_ID,
+        USER_PROFILES_COLLECTION_ID, // Use the correct collection ID: 67ef9774000e4d09d47a
         userId,
         {
           userId: userId,
           username: username,
+          firstName: firstName, // Added
+          lastName: lastName, // Added
         }
       );
       

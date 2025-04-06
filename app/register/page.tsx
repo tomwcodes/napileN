@@ -11,6 +11,8 @@ export default function RegisterPage() {
   const router = useRouter()
   const { register } = useAuth()
   const [formData, setFormData] = useState({
+    firstName: "", // Added
+    lastName: "", // Added
     username: "",
     email: "",
     password: "",
@@ -27,7 +29,8 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!formData.username.trim() || !formData.email.trim() || !formData.password.trim()) {
+    // Updated validation to include firstName and lastName
+    if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.username.trim() || !formData.email.trim() || !formData.password.trim()) {
       setError("All fields are required")
       return
     }
@@ -48,8 +51,14 @@ export default function RegisterPage() {
     setError("")
 
     try {
-      // Note: The register function signature needs to be updated in auth-context.tsx as well
-      await register(formData.username, formData.email, formData.password);
+      // Pass firstName and lastName to the register function
+      await register(
+        formData.firstName,
+        formData.lastName,
+        formData.username,
+        formData.email,
+        formData.password
+      );
       // The register function in AuthContext now handles login automatically
       router.push("/"); // Redirect to home on successful registration + login
     } catch (err: any) { // Use 'any' or check type more specifically
@@ -79,6 +88,39 @@ export default function RegisterPage() {
       {error && <div className="bg-red-50 border border-red-200 text-red-800 p-4 mb-6 rounded-sm">{error}</div>}
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Added First Name and Last Name fields */}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="form-group">
+            <label htmlFor="firstName" className="form-label">
+              First Name
+            </label>
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              className="form-input"
+              placeholder="John"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="lastName" className="form-label">
+              Last Name
+            </label>
+            <input
+              type="text"
+              id="lastName"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              className="form-input"
+              placeholder="Doe"
+              required
+            />
+          </div>
+        </div>
         <div className="form-group">
           <label htmlFor="username" className="form-label">
             Username
