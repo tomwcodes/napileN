@@ -2,14 +2,14 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 // import LatestSubmissions from "@/components/home/latest-submissions"; // Remove old import
 import FeaturedContent from "@/components/home/featured-content"; // Import new component
-import { getLatestContent } from "@/lib/data"; // Import data fetching function
+import { getLatestContent, getMostPopularContent } from "@/lib/data"; // Import data fetching functions
 
 export const revalidate = 0; // Force dynamic rendering and revalidation
 
 export default async function Home() { // Make the component async
   // Fetch data for the new component
   const recentContent = await getLatestContent(9); // Fetch 9 items for a 3-col grid
-  const mostReadContent = await getLatestContent(9); // Placeholder: Use latest for most read for now
+  const mostPopularContent = await getMostPopularContent(9); // Fetch 9 most popular items
   return (
     <div className="space-y-12">
       {/* Hero Section */}
@@ -32,7 +32,7 @@ export default async function Home() { // Make the component async
       {/* End Hero Section */}
 
       {/* Featured Content Section */}
-      <FeaturedContent recentContent={recentContent} mostReadContent={mostReadContent} />
+      <FeaturedContent recentContent={recentContent} mostPopularContent={mostPopularContent} /> {/* Pass mostPopularContent */}
       {/* End Featured Content Section */}
     </div>
   )

@@ -9,7 +9,7 @@ import type { Content } from '@/lib/types'
 
 interface FeaturedContentProps {
   recentContent: Content[]
-  mostReadContent: Content[] // Placeholder, will use recent content for now
+  mostPopularContent: Content[] // Renamed from mostReadContent
 }
 
 // Helper component to render a single content card
@@ -72,12 +72,11 @@ const ContentGrid = ({ contentList }: { contentList: Content[] }) => {
   )
 }
 
-export default function FeaturedContent({ recentContent, mostReadContent }: FeaturedContentProps) {
-  // Note: Using recentContent for mostReadContent as a placeholder
+export default function FeaturedContent({ recentContent, mostPopularContent }: FeaturedContentProps) { // Destructure mostPopularContent
   const [activeTab, setActiveTab] = useState('recent')
 
-  // TODO: Replace mostReadContent with actual data when available
-  const contentToDisplay = activeTab === 'recent' ? recentContent : mostReadContent;
+  // Determine which content list to display based on the active tab
+  const contentToDisplay = activeTab === 'recent' ? recentContent : mostPopularContent;
 
   return (
     <section className="py-12">
@@ -90,14 +89,14 @@ export default function FeaturedContent({ recentContent, mostReadContent }: Feat
         <Tabs defaultValue="recent" value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="recent">Recent</TabsTrigger>
-            <TabsTrigger value="mostRead">Most Read</TabsTrigger>
+            <TabsTrigger value="mostPopular">Most Popular</TabsTrigger> {/* Changed value and text */}
           </TabsList>
           <TabsContent value="recent">
             <ContentGrid contentList={recentContent} />
           </TabsContent>
-          <TabsContent value="mostRead">
-            {/* Using recentContent as placeholder for mostRead */}
-            <ContentGrid contentList={mostReadContent} />
+          <TabsContent value="mostPopular"> {/* Changed value */}
+            {/* Now using the actual most popular content */}
+            <ContentGrid contentList={mostPopularContent} />
           </TabsContent>
         </Tabs>
       </div>

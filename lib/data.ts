@@ -106,6 +106,22 @@ export async function getFeaturedContent(): Promise<Content[]> {
   }
 }
 
+// Get most popular content (sorted by likes)
+export async function getMostPopularContent(limit = 10): Promise<Content[]> {
+  try {
+    const response = await databases.listDocuments(
+      DATABASES_ID,
+      CONTENT_COLLECTION_ID,
+      [Query.orderDesc("likes"), Query.limit(limit)] // Sort by likes descending
+    );
+
+    return response.documents.map(mapDocumentToContent);
+  } catch (error) {
+    console.error("Error fetching most popular content:", error);
+    return [];
+  }
+}
+
 // Get latest content
 export async function getLatestContent(limit = 10): Promise<Content[]> {
   try {
