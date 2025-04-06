@@ -102,11 +102,15 @@ export default function Header() {
     }
   };
 
-  // Fetch the user's username when the user changes
+  // State for displayName
+  const [displayName, setDisplayName] = useState<string | null>(null);
+
+  // Fetch the user's username and displayName when the user changes
   useEffect(() => {
-    async function fetchUsername() {
+    async function fetchUserProfile() {
       if (!user) {
         setUsername(null)
+        setDisplayName(null)
         return
       }
       
@@ -118,28 +122,34 @@ export default function Header() {
         )
         
         if (response.documents.length > 0) {
-          setUsername(response.documents[0].username)
+          const userProfile = response.documents[0];
+          setUsername(userProfile.username)
+          setDisplayName(userProfile.displayName || userProfile.username)
         } else {
           // Fallback to user ID if no username is found
           setUsername(user.$id)
+          setDisplayName(user.$id)
         }
       } catch (error) {
-        console.error("Error fetching username:", error)
+        console.error("Error fetching user profile:", error)
         // Fallback to user ID if there's an error
         setUsername(user.$id)
+        setDisplayName(user.$id)
       }
     }
     
-    fetchUsername()
+    fetchUserProfile()
   }, [user])
   
   // Function to get user initials for avatar fallback
   const getUserInitials = () => {
-    // Use the fetched username if available, otherwise default
-    if (username && username.length > 0) {
+    // Use the fetched displayName if available, otherwise try username, then default
+    if (displayName && displayName.length > 0) {
+      return displayName[0].toUpperCase();
+    } else if (username && username.length > 0) {
       return username[0].toUpperCase();
     }
-    // Fallback if username is not yet loaded or empty
+    // Fallback if neither is loaded or empty
     return "U"; 
   }
 
@@ -220,7 +230,10 @@ export default function Header() {
                         setSearchTerm(""); // Optional: Clear search term on selection
                       }}
                     >
-                      {profile.username}
+                      <div>
+                        <div className="font-medium">{profile.name}</div>
+                        <div className="text-xs text-muted-foreground">@{profile.username}</div>
+                      </div>
                     </Link>
                   ))}
                 </div>
@@ -239,10 +252,10 @@ export default function Header() {
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                      {/* Display fetched username */}
-                      <p className="text-sm font-medium leading-none">{username || 'User'}</p> 
-                      {/* Optional: Add email if needed */}
-                      {/* <p className="text-xs leading-none text-muted-foreground">{user.email}</p> */}
+                      {/* Display displayName */}
+                      <p className="text-sm font-medium leading-none">{displayName || 'User'}</p> 
+                      {/* Display username with @ prefix */}
+                      <p className="text-xs leading-none text-muted-foreground">@{username || '...'}</p>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
@@ -309,8 +322,10 @@ export default function Header() {
                 <DropdownMenuContent align="end" className="w-48">
                  <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                      {/* Display fetched username */}
-                      <p className="text-sm font-medium leading-none">{username || 'User'}</p>
+                      {/* Display displayName */}
+                      <p className="text-sm font-medium leading-none">{displayName || 'User'}</p>
+                      {/* Display username with @ prefix */}
+                      <p className="text-xs leading-none text-muted-foreground">@{username || '...'}</p>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
@@ -367,7 +382,10 @@ export default function Header() {
                       setSearchTerm(""); // Optional: Clear search term
                     }}
                   >
-                    {profile.username}
+                    <div>
+                      <div className="font-medium">{profile.name}</div>
+                      <div className="text-xs text-muted-foreground">@{profile.username}</div>
+                    </div>
                   </Link>
                 ))}
               </div>

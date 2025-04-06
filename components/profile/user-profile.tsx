@@ -16,7 +16,8 @@ export default function UserProfile({ user }: UserProfileProps) {
             ?
           </div>
           <div>
-            <h1 className="mb-2">User Not Found</h1>
+            <h1 className="mb-1">User Not Found</h1>
+            <p className="text-sm text-muted-foreground">@unknown</p>
           </div>
         </div>
       </div>
@@ -26,11 +27,12 @@ export default function UserProfile({ user }: UserProfileProps) {
   // Appwrite SDK typically returns ISO string for $createdAt
   const joinedDate = user.$createdAt ? new Date(user.$createdAt).toLocaleDateString() : "N/A";
 
-  // Get username from user profile
+  // Get username and displayName from user profile
   const [username, setUsername] = useState<string | null>(null);
+  const [displayName, setDisplayName] = useState<string | null>(null);
   
   useEffect(() => {
-    async function fetchUsername() {
+    async function fetchUserProfile() {
       if (!user) return;
       
       try {
@@ -41,28 +43,31 @@ export default function UserProfile({ user }: UserProfileProps) {
         );
         
         if (response.documents.length > 0) {
-          setUsername(response.documents[0].username);
+          const userProfile = response.documents[0];
+          setUsername(userProfile.username);
+          setDisplayName(userProfile.displayName || userProfile.username);
         }
       } catch (error) {
-        console.error("Error fetching username:", error);
+        console.error("Error fetching user profile:", error);
       }
     }
     
-    fetchUsername();
+    fetchUserProfile();
   }, [user]);
 
   return (
     <div className="space-y-6">
       <div className="flex flex-row gap-6 items-center">
         <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center text-3xl font-serif">
-          {/* Use first letter of username for avatar, fallback if loading/null */}
-          {username ? username.charAt(0).toUpperCase() : "?"}
+          {/* Use first letter of displayName for avatar, fallback if loading/null */}
+          {displayName ? displayName.charAt(0).toUpperCase() : "?"}
         </div>
 
         <div>
-          {/* Display username prominently */}
-          <h1 className="mb-2">{username || "Loading..."}</h1>
-          {/* Removed separate username display */}
+          {/* Display displayName prominently */}
+          <h1 className="mb-1">{displayName || "Loading..."}</h1>
+          {/* Display username below with @ prefix */}
+          <p className="text-sm text-muted-foreground">@{username || "..."}</p>
         </div>
       </div>
 
