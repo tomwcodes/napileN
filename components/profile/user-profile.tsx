@@ -1,6 +1,11 @@
+"use client"; // Add "use client" because we're using hooks like useState, useEffect, and useAuth
+
 import { useState, useEffect } from "react";
 import { Models, Query } from "appwrite"; // Import Appwrite Models
 import { databases, DATABASES_ID, USER_PROFILES_COLLECTION_ID } from "@/lib/appwrite";
+import { useAuth } from "@/lib/auth-context"; // Import useAuth
+import { Button } from "@/components/ui/button"; // Import Button
+import Link from "next/link"; // Import Link
 
 interface UserProfileProps {
   user: Models.User<Models.Preferences> | null; // Allow null user
@@ -55,6 +60,12 @@ export default function UserProfile({ user }: UserProfileProps) {
     fetchUserProfile();
   }, [user]);
 
+  // Get the currently authenticated user
+  const { user: authUser, loading: authLoading } = useAuth();
+
+  // Determine if the current user is viewing their own profile
+  const isOwnProfile = !authLoading && authUser && user && authUser.$id === user.$id;
+
   return (
     <div className="space-y-6">
       <div className="flex flex-row gap-6 items-center">
@@ -78,6 +89,15 @@ export default function UserProfile({ user }: UserProfileProps) {
         </div>
         {/* Publication count would come from a separate DB query later */}
       </div>
+
+      {/* Conditionally render the Publish button */}
+      {isOwnProfile && (
+        <div className="mt-4"> {/* Add some margin top */}
+          <Link href="/write" passHref>
+            <Button>Publish New Work</Button>
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

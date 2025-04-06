@@ -8,7 +8,6 @@ Here are the next steps to fully integrate Appwrite and enhance the application:
 - [ ] **Loading States:** Improve loading state indicators (e.g., using skeletons) in components that fetch data asynchronously. (Basic skeleton added to profile page, review others).
 
 - saved posts
-- search bar working
 - your blog installation
 - you may also like section algorithm
 - deleting posts and users
