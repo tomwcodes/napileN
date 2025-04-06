@@ -38,7 +38,7 @@ const ContentCard = ({ content }: { content: Content }) => (
             </span>
             <span className="flex items-center gap-1">
               <MessageCircle className="w-3.5 h-3.5" />
-              {content.comments?.length || 0} {/* Use optional chaining and default to 0 */}
+              {content.commentCount ?? 0}
             </span>
           </div>
         </div>
