@@ -63,10 +63,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (firstName: string, lastName: string, username: string, email: string, password: string) => {
     setLoading(true);
     try {
-      // 1. Check if username already exists in the user_profiles collection
+      // --- Input Validation ---
+      if (!firstName?.trim() || !lastName?.trim() || !username?.trim() || !email?.trim() || !password?.trim()) {
+        throw new Error("All fields are required.");
+      }
+      if (firstName.length > 50) {
+        throw new Error("First name cannot exceed 50 characters.");
+      }
+      if (lastName.length > 50) {
+        throw new Error("Last name cannot exceed 50 characters.");
+      }
+      const usernameRegex = /^[a-zA-Z0-9_]+$/;
+      if (!usernameRegex.test(username)) {
+        throw new Error("Username can only contain letters, numbers, and underscores.");
+      }
+      if (username.length < 3 || username.length > 30) {
+        throw new Error("Username must be between 3 and 30 characters.");
+      }
+      // Basic email format check
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        throw new Error("Invalid email format.");
+      }
+      if (password.length < 8) {
+        throw new Error("Password must be at least 8 characters long.");
+      }
+      // --- End Input Validation ---
+
+      // 1. Check if username already exists in the user_profiles collection (Keep this check)
       const existingProfiles = await databases.listDocuments(
         DATABASES_ID,
-        USER_PROFILES_COLLECTION_ID,
+        USER_PROFILES_COLLECTION_ID, // Ensure this constant is correct
         [Query.equal("username", username)]
       );
 
