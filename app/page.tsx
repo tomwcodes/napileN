@@ -18,7 +18,7 @@ export default async function Home() { // Make the component async
           Share your words with the world.
         </h1>
         <p className="text-xl text-gray-500 dark:text-gray-400 max-w-2xl">
-          The platform for publishing and discovering poetry and stories.
+          The platform for publishing and discovering poetry and fiction. {/* Changed stories to fiction */}
         </p>
         <Link href="/write">
           <Button

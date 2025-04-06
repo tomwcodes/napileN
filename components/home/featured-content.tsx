@@ -23,7 +23,7 @@ const ContentCard = ({ content }: { content: Content }) => {
 
   return (
     <Link
-      href={`/${content.type === "poetry" ? "poetry" : content.type === "story" ? "stories" : "articles"}/${content.slug}`}
+      href={`/${content.type === "poetry" ? "poetry" : content.type === "fiction" ? "fiction" : "articles"}/${content.slug}`} // Changed "story" to "fiction" and "stories" to "fiction"
     className="group block hover:no-underline"
   >
     <Card className="group-hover:border-primary transition-colors h-full flex flex-col">

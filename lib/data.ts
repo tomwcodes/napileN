@@ -57,18 +57,18 @@ export async function getPoems(): Promise<Content[]> {
   }
 }
 
-// Get all story content
-export async function getStories(): Promise<Content[]> {
+// Get all fiction content
+export async function getFiction(): Promise<Content[]> {
   try {
     const response = await databases.listDocuments(
       DATABASES_ID,
       CONTENT_COLLECTION_ID,
-      [Query.equal("type", "story")]
+      [Query.equal("type", "fiction")] // Update type query
     );
     
     return response.documents.map(mapDocumentToContent);
   } catch (error) {
-    console.error("Error fetching stories:", error);
+    console.error("Error fetching fiction:", error); // Update error message
     return [];
   }
 }
@@ -210,10 +210,10 @@ export async function getContentBySlug(type: string, slug: string): Promise<Cont
     
     // Check if the document type matches the requested type
     const docType = document.type;
-    // Convert plural URL types ("stories", "articles") to singular DB types ("story", "article")
+    // Convert plural URL types ("fiction", "articles") to singular DB types ("fiction", "article")
     let requestedType = type;
-    if (type === "stories") {
-      requestedType = "story";
+    if (type === "fiction") { // Changed "stories" to "fiction"
+      requestedType = "fiction"; // Changed "story" to "fiction"
     } else if (type === "articles") {
       requestedType = "article";
     }
@@ -333,7 +333,7 @@ async function updateCommentCount(contentId: string): Promise<void> {
 export async function getRelatedContent(contentId: string, type: string, limit = 3): Promise<Content[]> {
   try {
     // Convert type parameter to match database values
-    const dbType = type === "stories" ? "story" : type;
+    const dbType = type === "fiction" ? "fiction" : type; // Changed "stories" to "fiction" and "story" to "fiction"
     
     // Get content of the same type, excluding the current content
     const response = await databases.listDocuments(
@@ -364,7 +364,7 @@ export async function createContent(
 ): Promise<Content | null> {
   try {
     // Convert type parameter if needed
-    const dbType = type === "stories" ? "story" : type;
+    const dbType = type === "fiction" ? "fiction" : type; // Changed "stories" to "fiction" and "story" to "fiction"
     
     // Create the document in Appwrite
     const response = await databases.createDocument(

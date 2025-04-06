@@ -210,8 +210,8 @@ export default function Header() {
             <Link href="/poetry" className={getLinkClass("/poetry")}>
               Poetry
             </Link>
-            <Link href="/stories" className={getLinkClass("/stories")}>
-              Stories
+            <Link href="/fiction" className={getLinkClass("/fiction")}> {/* Changed href and class check */}
+              Fiction {/* Changed text */}
             </Link>
             <Link href="/articles" className={getLinkClass("/articles")}>
               Articles
@@ -421,8 +421,8 @@ export default function Header() {
             <Link href="/poetry" className={getMobileLinkClass("/poetry")} onClick={toggleMenu}>
               Poetry
             </Link>
-            <Link href="/stories" className={getMobileLinkClass("/stories")} onClick={toggleMenu}>
-              Stories
+            <Link href="/fiction" className={getMobileLinkClass("/fiction")} onClick={toggleMenu}> {/* Changed href and class check */}
+              Fiction {/* Changed text */}
             </Link>
             <Link href="/articles" className={getMobileLinkClass("/articles")} onClick={toggleMenu}>
               Articles

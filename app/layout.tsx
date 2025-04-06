@@ -17,8 +17,8 @@ const playfair = Playfair_Display({
 })
 
 export const metadata: Metadata = {
-  title: "Verse | Poetry & Story Publishing Platform",
-  description: "A minimalist platform for publishing and reading poems and stories",
+  title: "Verse | Poetry & Fiction Publishing Platform", // Updated Story to Fiction
+  description: "A minimalist platform for publishing and reading poems and fiction", // Updated stories to fiction
     generator: 'v0.dev'
 }
 

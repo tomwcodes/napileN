@@ -25,7 +25,7 @@ export default function PublishedWorksList({ items }: PublishedWorksListProps) {
       {items.map((item) => ( // Use items directly
         <Link
           key={item.id}
-          href={`/${item.type === "poetry" ? "poetry" : item.type === "story" ? "stories" : "articles"}/${item.slug}`}
+          href={`/${item.type === "poetry" ? "poetry" : item.type === "fiction" ? "fiction" : "articles"}/${item.slug}`} // Changed "story" to "fiction" and "stories" to "fiction"
           className="flex items-center justify-between py-3 px-3 hover:bg-muted/50 transition-colors hover:no-underline"
         >
           <div className="flex items-center gap-3 overflow-hidden">

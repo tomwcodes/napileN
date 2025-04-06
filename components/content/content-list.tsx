@@ -7,7 +7,7 @@ import { useIsMobile } from "@/hooks/use-mobile"
 
 interface ContentListProps {
   items: Content[]
-  type: "poetry" | "story" | "article" | "all"
+  type: "poetry" | "fiction" | "article" | "all" // Changed "story" to "fiction"
 }
 
 export default function ContentList({ items, type }: ContentListProps) {
@@ -26,7 +26,7 @@ export default function ContentList({ items, type }: ContentListProps) {
       {items.map((item) => (
         <Link
           key={item.id}
-          href={`/${item.type === "poetry" ? "poetry" : item.type === "story" ? "stories" : "articles"}/${item.slug}`}
+          href={`/${item.type === "poetry" ? "poetry" : item.type === "fiction" ? "fiction" : "articles"}/${item.slug}`} // Changed "story" to "fiction" and "stories" to "fiction"
           className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-3 px-3 hover:bg-muted/50 transition-colors hover:no-underline"
         >
           {isMobile ? (

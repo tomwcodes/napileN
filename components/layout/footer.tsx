@@ -19,7 +19,7 @@ export default function Footer() {
           {/* Kept text-center to center the content within the container */}
           <div className="text-center">
             <h3 className="text-lg font-semibold mb-4">Verse</h3>
-            <p className="text-muted-foreground">The platform for publishing and discovering poetry and stories.</p>
+            <p className="text-muted-foreground">The platform for publishing and discovering poetry and fiction.</p> {/* Changed stories to fiction */}
           </div>
 
           {/* <div>
