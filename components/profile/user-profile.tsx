@@ -79,22 +79,23 @@ export default function UserProfile({ user }: UserProfileProps) {
           <h1 className="mb-1">{displayName || "Loading..."}</h1>
           {/* Display username below with @ prefix */}
           <p className="text-sm text-muted-foreground">@{username || "..."}</p>
+          {/* Moved Joined date here */}
+          <div className="text-sm text-muted-foreground mt-1"> {/* Added margin top */}
+            Joined: {joinedDate}
+          </div>
         </div>
       </div>
 
-      <div className="flex gap-6 text-sm">
-        <div>
-          {/* Use $createdAt */}
-          <span className="font-medium">Joined:</span> {joinedDate}
-        </div>
-        {/* Publication count would come from a separate DB query later */}
-      </div>
+      {/* Removed the separate div for Joined date */}
 
       {/* Conditionally render the Publish button */}
       {isOwnProfile && (
         <div className="mt-4"> {/* Add some margin top */}
           <Link href="/write" passHref>
-            <Button>Publish New Work</Button>
+            {/* Apply specific styling from stories page */}
+            <Button className="text-white bg-red-900 px-4 py-2 rounded hover:bg-red-950 transition-colors">
+              Publish New Work
+            </Button>
           </Link>
         </div>
       )}
