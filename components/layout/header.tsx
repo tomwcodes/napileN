@@ -277,7 +277,7 @@ export default function Header() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
                   {/* Combined Profile Link Item */}
-                  <DropdownMenuItem asChild className="focus:bg-accent focus:text-accent-foreground cursor-pointer">
+                  <DropdownMenuItem asChild className="focus:bg-gray-100 focus:text-gray-900 cursor-pointer">
                     <Link href={`/profile/${username || user.$id}`} className="flex w-full flex-col space-y-1 p-2">
                       {/* Display displayName */}
                       <p className="text-sm font-medium leading-none">{displayName || 'User'}</p>
@@ -287,8 +287,10 @@ export default function Header() {
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   {/* End Combined Profile Link Item */}
-                  <DropdownMenuItem onClick={logout} className="cursor-pointer flex items-center">
-                    <LogOut className="mr-2 h-4 w-4" />
+                  <DropdownMenuItem 
+                    onClick={logout} 
+                    className="cursor-pointer text-center justify-center focus:bg-gray-100 focus:text-gray-900 hover:bg-gray-100 hover:text-gray-900"
+                  >
                     Log Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -346,7 +348,7 @@ export default function Header() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
                   {/* Combined Profile Link Item */}
-                  <DropdownMenuItem asChild className="focus:bg-accent focus:text-accent-foreground cursor-pointer">
+                  <DropdownMenuItem asChild className="focus:bg-gray-100 focus:text-gray-900 cursor-pointer">
                     <Link href={`/profile/${username || user.$id}`} className="flex w-full flex-col space-y-1 p-2">
                       {/* Display displayName */}
                       <p className="text-sm font-medium leading-none">{displayName || 'User'}</p>
@@ -356,8 +358,10 @@ export default function Header() {
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   {/* End Combined Profile Link Item */}
-                  <DropdownMenuItem onClick={logout} className="cursor-pointer flex items-center">
-                    <LogOut className="mr-2 h-4 w-4" />
+                  <DropdownMenuItem 
+                    onClick={logout} 
+                    className="cursor-pointer text-center justify-center focus:bg-gray-100 focus:text-gray-900 hover:bg-gray-100 hover:text-gray-900"
+                  >
                     Log Out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
