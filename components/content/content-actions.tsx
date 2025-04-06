@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "@/lib/auth-context"
 import type { Content } from "@/lib/types"
-import { ThumbsUp, Share2, Bookmark } from "lucide-react"
+import { ThumbsUp, Share2, Bookmark, MessageSquare } from "lucide-react"
 import { likeContent, unlikeContent } from "@/lib/data"
 
 interface ContentActionsProps {
@@ -83,6 +83,11 @@ export default function ContentActions({ content }: ContentActionsProps) {
         <ThumbsUp size={20} />
         <span>{likes}</span>
       </button>
+
+      <div className="flex items-center gap-2 text-muted-foreground">
+        <MessageSquare size={20} />
+        <span>{content.commentCount || 0}</span>
+      </div>
 
       <button
         onClick={handleBookmark}
