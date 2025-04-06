@@ -89,6 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           username: username,
           firstName: firstName, // Added
           lastName: lastName, // Added
+          displayName: `${firstName} ${lastName}`, // Added displayName
         }
       );
       
