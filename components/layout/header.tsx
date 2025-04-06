@@ -73,26 +73,45 @@ export default function Header() {
       return;
     }
     try {
-      const response = await databases.listDocuments(
+      // Search for username matches
+      const usernameResponse = await databases.listDocuments(
         DATABASES_ID,
         USER_PROFILES_COLLECTION_ID,
-        [Query.search("username", term), Query.limit(5)] // Search username, limit results
+        [Query.search("username", term), Query.limit(5)]
       );
-      // Assuming the document structure matches UserProfile or has a username field
-      // Map response documents to UserProfile structure if necessary
-      const profiles = response.documents.map(doc => ({
-        id: doc.$id, // Assuming $id is the user profile document ID
-        // Map other fields based on your USER_PROFILES_COLLECTION structure
+      
+      // Search for displayName matches
+      const displayNameResponse = await databases.listDocuments(
+        DATABASES_ID,
+        USER_PROFILES_COLLECTION_ID,
+        [Query.search("displayName", term), Query.limit(5)]
+      );
+      
+      // Combine results and remove duplicates
+      const combinedDocs = [...usernameResponse.documents];
+      
+      // Add displayName results that aren't already in the combined list
+      displayNameResponse.documents.forEach(doc => {
+        if (!combinedDocs.some(existingDoc => existingDoc.$id === doc.$id)) {
+          combinedDocs.push(doc);
+        }
+      });
+      
+      // Limit to 5 results total
+      const limitedDocs = combinedDocs.slice(0, 5);
+      
+      // Map to UserProfile structure
+      const profiles = limitedDocs.map(doc => ({
+        id: doc.$id,
         username: doc.username,
-        name: doc.name || doc.username, // Fallback name
-        userId: doc.userId, // Assuming you store the auth user ID
-        // Add other fields as needed, potentially fetching full user data if required
-        // For simplicity, we might only need username and ID for linking
+        name: doc.displayName || doc.username, // Use displayName instead of name
+        userId: doc.userId,
         email: '', // Placeholder
         bio: '', // Placeholder
-        createdAt: doc.$createdAt, // Placeholder
+        createdAt: doc.$createdAt,
         publicationCount: 0 // Placeholder
-      })) as UserProfile[]; // Cast might be needed depending on exact structure
+      })) as UserProfile[];
+      
       setSearchResults(profiles);
     } catch (error) {
       console.error("Error searching users:", error);
