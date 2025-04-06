@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react' // Import useEffect
 import Link from 'next/link'
 import { Heart, MessageCircle } from 'lucide-react' // Import icons
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -13,9 +13,17 @@ interface FeaturedContentProps {
 }
 
 // Helper component to render a single content card
-const ContentCard = ({ content }: { content: Content }) => (
-  <Link
-    href={`/${content.type === "poetry" ? "poetry" : content.type === "story" ? "stories" : "articles"}/${content.slug}`}
+const ContentCard = ({ content }: { content: Content }) => {
+  const [formattedDate, setFormattedDate] = useState<string | null>(null)
+
+  useEffect(() => {
+    // Format date client-side after hydration
+    setFormattedDate(new Date(content.createdAt).toLocaleDateString())
+  }, [content.createdAt]) // Re-run if createdAt changes (though unlikely for props)
+
+  return (
+    <Link
+      href={`/${content.type === "poetry" ? "poetry" : content.type === "story" ? "stories" : "articles"}/${content.slug}`}
     className="group block hover:no-underline"
   >
     <Card className="group-hover:border-primary transition-colors h-full flex flex-col">
@@ -29,7 +37,8 @@ const ContentCard = ({ content }: { content: Content }) => (
           <div className="flex items-center gap-2"> {/* Group author and date */}
             <span>By {content.author.name}</span>
             <span>·</span>
-            <span>{new Date(content.createdAt).toLocaleDateString()}</span>
+            {/* Render formatted date from state, fallback to empty or raw */}
+            <span>{formattedDate ?? ''}</span> 
           </div>
           <div className="flex items-center gap-3"> {/* Group likes and comments */}
             <span className="flex items-center gap-1">
@@ -45,7 +54,8 @@ const ContentCard = ({ content }: { content: Content }) => (
       </CardContent>
     </Card>
   </Link>
-)
+  )
+}
 
 // Helper component to render the list of content cards
 const ContentGrid = ({ contentList }: { contentList: Content[] }) => {
