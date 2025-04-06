@@ -1,10 +1,11 @@
 "use client"
 
 import Link from "next/link"
-import { useState, useEffect } from "react"
-import { usePathname } from "next/navigation"
+import { useState, useEffect, useRef } from "react" // Added useRef
+import { usePathname, useRouter } from "next/navigation" // Added useRouter
 import { useAuth } from "@/lib/auth-context"
 import { databases, DATABASES_ID, USER_PROFILES_COLLECTION_ID } from "@/lib/appwrite"
+import { User as UserProfile } from "@/lib/types" // Import User type
 import { Query } from "appwrite"
 import { Menu, X, User, LogOut, Search } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -23,8 +24,84 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
+  const [searchResults, setSearchResults] = useState<UserProfile[]>([])
+  const [isSearching, setIsSearching] = useState(false)
+  const [isResultsOpen, setIsResultsOpen] = useState(false) // Control results dropdown visibility
   const [username, setUsername] = useState<string | null>(null)
-  
+  const router = useRouter() // Initialize router
+  const searchContainerRef = useRef<HTMLDivElement>(null); // Ref for click outside detection
+
+  // Debounce search term
+  useEffect(() => {
+    setIsResultsOpen(searchTerm.length > 0); // Open results if there's a term
+
+    if (searchTerm.trim().length === 0) {
+      setSearchResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+    const debounceTimer = setTimeout(() => {
+      handleSearch(searchTerm.trim());
+    }, 500); // 500ms debounce
+
+    return () => clearTimeout(debounceTimer); // Cleanup timer on unmount or term change
+  }, [searchTerm]);
+
+  // Click outside handler for search results
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setIsResultsOpen(false); // Close results if click is outside
+      }
+    }
+    // Bind the event listener
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [searchContainerRef]);
+
+
+  // Function to perform the search
+  const handleSearch = async (term: string) => {
+    if (!term) {
+      setSearchResults([]);
+      setIsSearching(false);
+      return;
+    }
+    try {
+      const response = await databases.listDocuments(
+        DATABASES_ID,
+        USER_PROFILES_COLLECTION_ID,
+        [Query.search("username", term), Query.limit(5)] // Search username, limit results
+      );
+      // Assuming the document structure matches UserProfile or has a username field
+      // Map response documents to UserProfile structure if necessary
+      const profiles = response.documents.map(doc => ({
+        id: doc.$id, // Assuming $id is the user profile document ID
+        // Map other fields based on your USER_PROFILES_COLLECTION structure
+        username: doc.username,
+        name: doc.name || doc.username, // Fallback name
+        userId: doc.userId, // Assuming you store the auth user ID
+        // Add other fields as needed, potentially fetching full user data if required
+        // For simplicity, we might only need username and ID for linking
+        email: '', // Placeholder
+        bio: '', // Placeholder
+        createdAt: doc.$createdAt, // Placeholder
+        publicationCount: 0 // Placeholder
+      })) as UserProfile[]; // Cast might be needed depending on exact structure
+      setSearchResults(profiles);
+    } catch (error) {
+      console.error("Error searching users:", error);
+      setSearchResults([]); // Clear results on error
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
   // Fetch the user's username when the user changes
   useEffect(() => {
     async function fetchUsername() {
@@ -114,17 +191,41 @@ export default function Header() {
 
           {/* Auth Links/Buttons - Column 3 */}
           <div className="col-span-1 flex justify-end items-center gap-6">
-            {/* Desktop Search Bar */}
-            <form onSubmit={(e) => e.preventDefault()} className="relative w-48">
-              <input
-                type="text"
-                placeholder="Search..."
+            {/* Desktop Search Bar & Results */}
+            <div ref={searchContainerRef} className="relative w-48"> {/* Added ref */}
+              <form onSubmit={(e) => e.preventDefault()} >
+                <input
+                  type="text"
+                placeholder="search authors"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="form-input pl-10 py-1 w-full text-sm rounded-md border border-gray-300 focus:border-red-900 focus:ring-1 focus:ring-red-900"
-              />
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
-            </form>
+                  className="form-input pl-10 py-1 w-full text-sm rounded-md border border-gray-300 focus:border-red-900 focus:ring-1 focus:ring-red-900"
+                />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
+              </form>
+              {/* Search Results Dropdown */}
+              {isResultsOpen && (
+                 <div className="absolute z-10 top-full left-0 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                  {isSearching && <div className="p-2 text-sm text-gray-500">Searching...</div>}
+                  {!isSearching && searchResults.length === 0 && searchTerm.length > 0 && (
+                    <div className="p-2 text-sm text-gray-500">No authors found.</div>
+                  )}
+                  {!isSearching && searchResults.map((profile) => (
+                    <Link
+                      key={profile.id}
+                      href={`/profile/${profile.username}`}
+                      className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => {
+                        setIsResultsOpen(false); // Close on selection
+                        setSearchTerm(""); // Optional: Clear search term on selection
+                      }}
+                    >
+                      {profile.username}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -234,13 +335,13 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile Search Bar - Collapsible */}
+        {/* Mobile Search Bar & Results - Collapsible */}
         {isSearchOpen && (
-          <div className="md:hidden mt-4 pt-4 border-t border-gray-100">
-            <form onSubmit={(e) => e.preventDefault()} className="relative">
+          <div ref={searchContainerRef} className="md:hidden mt-4 pt-4 border-t border-gray-100 relative"> {/* Added ref */}
+            <form onSubmit={(e) => e.preventDefault()} >
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder="search authors"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="form-input pl-10 py-2 w-full text-sm rounded-md border border-gray-300 focus:border-red-900 focus:ring-1 focus:ring-red-900"
@@ -248,6 +349,29 @@ export default function Header() {
               />
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
             </form>
+             {/* Mobile Search Results Dropdown */}
+             {isResultsOpen && (
+               <div className="absolute z-10 top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                {isSearching && <div className="p-2 text-sm text-gray-500">Searching...</div>}
+                {!isSearching && searchResults.length === 0 && searchTerm.length > 0 && (
+                  <div className="p-2 text-sm text-gray-500">No authors found.</div>
+                )}
+                {!isSearching && searchResults.map((profile) => (
+                  <Link
+                    key={profile.id}
+                    href={`/profile/${profile.username}`}
+                    className="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => {
+                      setIsResultsOpen(false); // Close on selection
+                      setIsSearchOpen(false); // Close mobile search bar too
+                      setSearchTerm(""); // Optional: Clear search term
+                    }}
+                  >
+                    {profile.username}
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
