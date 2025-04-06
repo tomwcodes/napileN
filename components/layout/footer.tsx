@@ -1,7 +1,15 @@
+"use client" // Add this directive for useState/useEffect
+
 import Link from "next/link"
+import { useState, useEffect } from "react"
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear()
+  const [currentYear, setCurrentYear] = useState<number | null>(null)
+
+  useEffect(() => {
+    // Set the year only on the client-side after hydration
+    setCurrentYear(new Date().getFullYear())
+  }, []) // Empty dependency array ensures this runs only once on the client
 
   return (
     <footer className="border-t border-border py-8 mt-12">
@@ -63,7 +71,9 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-border mt-8 pt-8 text-center text-muted-foreground">
-          <p>&copy; {currentYear} Verse. All rights reserved.</p>
+          {/* Render the year only when the state is set */}
+          <p>&copy; {currentYear ?? new Date().getFullYear()} Verse. All rights reserved.</p> 
+          {/* Added fallback for initial render/SSR, though useEffect should handle it */}
         </div>
       </div>
     </footer>
