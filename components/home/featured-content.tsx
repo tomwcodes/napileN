@@ -73,10 +73,10 @@ const ContentGrid = ({ contentList }: { contentList: Content[] }) => {
 }
 
 export default function FeaturedContent({ recentContent, mostPopularContent }: FeaturedContentProps) { // Destructure mostPopularContent
-  const [activeTab, setActiveTab] = useState('recent')
+  const [activeTab, setActiveTab] = useState('new') // Changed default state
 
   // Determine which content list to display based on the active tab
-  const contentToDisplay = activeTab === 'recent' ? recentContent : mostPopularContent;
+  const contentToDisplay = activeTab === 'new' ? recentContent : mostPopularContent; // Updated condition
 
   return (
     <section className="py-12">
@@ -86,15 +86,15 @@ export default function FeaturedContent({ recentContent, mostPopularContent }: F
           {/* View all link removed */}
         </div>
 
-        <Tabs defaultValue="recent" value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <Tabs defaultValue="new" value={activeTab} onValueChange={setActiveTab} className="w-full"> {/* Changed defaultValue */}
           <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="recent">Recent</TabsTrigger>
-            <TabsTrigger value="mostPopular">Most Popular</TabsTrigger> {/* Changed value and text */}
+            <TabsTrigger value="new">New</TabsTrigger> {/* Changed value and text */}
+            <TabsTrigger value="mostPopular">Most Popular</TabsTrigger>
           </TabsList>
-          <TabsContent value="recent">
+          <TabsContent value="new"> {/* Changed value */}
             <ContentGrid contentList={recentContent} />
           </TabsContent>
-          <TabsContent value="mostPopular"> {/* Changed value */}
+          <TabsContent value="mostPopular">
             {/* Now using the actual most popular content */}
             <ContentGrid contentList={mostPopularContent} />
           </TabsContent>
