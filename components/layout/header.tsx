@@ -276,21 +276,17 @@ export default function Header() {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
+                  {/* Combined Profile Link Item */}
+                  <DropdownMenuItem asChild className="focus:bg-accent focus:text-accent-foreground cursor-pointer">
+                    <Link href={`/profile/${username || user.$id}`} className="flex w-full flex-col space-y-1 p-2">
                       {/* Display displayName */}
-                      <p className="text-sm font-medium leading-none">{displayName || 'User'}</p> 
+                      <p className="text-sm font-medium leading-none">{displayName || 'User'}</p>
                       {/* Display username with @ prefix */}
                       <p className="text-xs leading-none text-muted-foreground">@{username || '...'}</p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href={`/profile/${username || user.$id}`} className="cursor-pointer flex w-full items-center">
-                      <User className="mr-2 h-4 w-4" />
-                      Profile
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  {/* End Combined Profile Link Item */}
                   <DropdownMenuItem onClick={logout} className="cursor-pointer flex items-center">
                     <LogOut className="mr-2 h-4 w-4" />
                     Log Out
@@ -349,21 +345,17 @@ export default function Header() {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                 <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
+                  {/* Combined Profile Link Item */}
+                  <DropdownMenuItem asChild className="focus:bg-accent focus:text-accent-foreground cursor-pointer">
+                    <Link href={`/profile/${username || user.$id}`} className="flex w-full flex-col space-y-1 p-2">
                       {/* Display displayName */}
                       <p className="text-sm font-medium leading-none">{displayName || 'User'}</p>
                       {/* Display username with @ prefix */}
                       <p className="text-xs leading-none text-muted-foreground">@{username || '...'}</p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href={`/profile/${username || user.$id}`} className="cursor-pointer flex w-full items-center">
-                      <User className="mr-2 h-4 w-4" />
-                      Profile
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  {/* End Combined Profile Link Item */}
                   <DropdownMenuItem onClick={logout} className="cursor-pointer flex items-center">
                     <LogOut className="mr-2 h-4 w-4" />
                     Log Out
