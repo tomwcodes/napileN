@@ -15,3 +15,4 @@ Here are the next steps to fully integrate Appwrite and enhance the application:
 - your blog installation
 - you may also like section
 - deleting posts and users
+- if no spaces text overlaps screen

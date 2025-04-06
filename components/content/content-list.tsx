@@ -57,7 +57,7 @@ export default function ContentList({ items, type }: ContentListProps) {
 
                   <div className="flex items-center gap-1 text-muted-foreground">
                     <MessageSquare size={14} />
-                    <span className="text-xs">{item.comments.length}</span>
+                    <span className="text-xs">{item.commentCount ?? 0}</span>
                   </div>
                 </div>
               </div>
@@ -88,7 +88,7 @@ export default function ContentList({ items, type }: ContentListProps) {
 
                 <div className="flex items-center gap-1 text-muted-foreground">
                   <MessageSquare size={14} />
-                  <span className="text-xs">{item.comments.length}</span>
+                  <span className="text-xs">{item.commentCount ?? 0}</span>
                 </div>
               </div>
             </>
