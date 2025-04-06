@@ -94,7 +94,7 @@ export default function UserProfile({ user }: UserProfileProps) {
           <Link href="/write" passHref>
             {/* Apply specific styling from stories page */}
             <Button className="text-white bg-red-900 px-4 py-2 rounded hover:bg-red-950 transition-colors">
-              Publish New Work
+              Publish
             </Button>
           </Link>
         </div>

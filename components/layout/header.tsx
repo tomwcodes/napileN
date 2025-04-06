@@ -9,6 +9,7 @@ import { User as UserProfile } from "@/lib/types" // Import User type
 import { Query } from "appwrite"
 import { Menu, X, User, LogOut, Search } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Skeleton } from "@/components/ui/skeleton" // Import Skeleton
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,7 +21,7 @@ import {
 
 export default function Header() {
   const pathname = usePathname()
-  const { user, logout } = useAuth()
+  const { user, logout, loading } = useAuth() // Add loading state
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
@@ -258,7 +259,13 @@ export default function Header() {
                 </div>
               )}
             </div>
-            {user ? (
+            {/* === Desktop Auth Section === */}
+            {loading ? (
+              <div className="flex items-center gap-4">
+                <Skeleton className="h-8 w-20" />
+                <Skeleton className="h-9 w-9 rounded-full" />
+              </div>
+            ) : user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-red-900 focus:ring-offset-2">
@@ -306,6 +313,7 @@ export default function Header() {
                 </Link>
               </>
             )}
+            {/* === End Desktop Auth Section === */}
           </div>
         </div>
 
@@ -327,8 +335,10 @@ export default function Header() {
               <Search size={20} />
             </button>
             
-            {/* User Avatar (if logged in) */}
-            {user && (
+            {/* === Mobile User Avatar Section === */}
+            {loading ? (
+              <Skeleton className="h-8 w-8 rounded-full" />
+            ) : user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-red-900 focus:ring-offset-2">
@@ -360,7 +370,8 @@ export default function Header() {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            )}
+            ) : null } {/* Render nothing if loading is false and user is null */}
+            {/* === End Mobile User Avatar Section === */}
             
             {/* Mobile menu button */}
             <button onClick={toggleMenu} aria-label="Toggle menu" className="p-1">
@@ -427,13 +438,21 @@ export default function Header() {
             <Link href="/articles" className={getMobileLinkClass("/articles")} onClick={toggleMenu}>
               Articles
             </Link>
-
-            {user ? (
-              // Removed the username display from here
+            
+            {/* === Mobile Login/Signup Section === */}
+            {loading ? (
+              <div className="flex flex-col gap-3 pt-3">
+                <Skeleton className="h-10 w-full rounded-md" />
+                <Skeleton className="h-10 w-full rounded-md" />
+              </div>
+            ) : user ? (
+              // Logged in - No explicit login/signup buttons needed here
+              // Profile/Logout are handled by the avatar dropdown
               <div className="pt-3 border-t border-gray-100 mt-2">
-                {/* Placeholder div to maintain structure if needed, or remove entirely */}
+                 {/* Maybe add settings or other links here later */}
               </div>
             ) : (
+              // Logged out - Show login/signup
               <div className="flex flex-col gap-3 pt-3">
                 <Link
                   href="/login"
@@ -451,6 +470,7 @@ export default function Header() {
                 </Link>
               </div>
             )}
+            {/* === End Mobile Login/Signup Section === */}
           </nav>
         )}
       </div>

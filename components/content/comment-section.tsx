@@ -6,6 +6,7 @@ import { useState, useEffect } from "react"
 import { useAuth } from "@/lib/auth-context"
 import { getCommentsByContentId, createComment } from "@/lib/data"
 import { databases, DATABASES_ID, USER_PROFILES_COLLECTION_ID } from "@/lib/appwrite"
+import { Skeleton } from "@/components/ui/skeleton" // Import Skeleton
 import { Query } from "appwrite"
 import CommentItem from "./comment-item"
 import type { Comment } from "@/lib/types"
@@ -15,7 +16,7 @@ interface CommentSectionProps {
 }
 
 export default function CommentSection({ contentId }: CommentSectionProps) {
-  const { user } = useAuth()
+  const { user, loading: authLoading } = useAuth() // Get user and auth loading state
   const [comment, setComment] = useState("")
   const [comments, setComments] = useState<Comment[]>([])
   const [loading, setLoading] = useState(true)
@@ -116,7 +117,13 @@ export default function CommentSection({ contentId }: CommentSectionProps) {
         )}
       </div>
 
-      {user ? (
+      {/* Comment Input Area */}
+      {authLoading ? (
+        <div className="mt-6 mb-2 w-full max-w-2xl space-y-2">
+          <Skeleton className="h-20 w-full" />
+          <Skeleton className="h-10 w-32" />
+        </div>
+      ) : user ? (
         <form onSubmit={handleSubmit} className="mt-6 mb-2 w-full max-w-2xl">
           <textarea
             value={comment}
