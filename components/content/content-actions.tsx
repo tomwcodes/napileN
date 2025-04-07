@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useAuth } from "@/lib/auth-context"
 import type { Content } from "@/lib/types"
 import { ThumbsUp, Share2, Bookmark, MessageSquare } from "lucide-react"
-import { likeContent, unlikeContent } from "@/lib/data"
+import { likeContent, unlikeContent, isContentSaved, toggleSaveContent } from "@/lib/data"
 
 interface ContentActionsProps {
   content: Content
@@ -23,6 +23,22 @@ export default function ContentActions({ content }: ContentActionsProps) {
       setIsLiked(content.likedBy.includes(user.$id))
     }
   }, [user, content.likedBy])
+
+  // Check if the current user has already saved this content
+  useEffect(() => {
+    async function checkSavedStatus() {
+      if (user) {
+        try {
+          const saved = await isContentSaved(content.id, user.$id)
+          setIsBookmarked(saved)
+        } catch (error) {
+          console.error("Error checking saved status:", error)
+        }
+      }
+    }
+    
+    checkSavedStatus()
+  }, [user, content.id])
 
   const handleLike = async () => {
     if (!user) {
@@ -57,14 +73,27 @@ export default function ContentActions({ content }: ContentActionsProps) {
     }
   }
 
-  const handleBookmark = () => {
+  const handleBookmark = async () => {
     if (!user) {
-      alert("You must be logged in to bookmark content")
+      alert("You must be logged in to save content")
       return
     }
 
-    // This would be replaced with Appwrite SDK in phase 2
-    setIsBookmarked(!isBookmarked)
+    if (isUpdating) return // Prevent multiple clicks while updating
+
+    setIsUpdating(true)
+
+    try {
+      // Toggle save status
+      const success = await toggleSaveContent(content.id, user.$id)
+      if (success) {
+        setIsBookmarked(!isBookmarked)
+      }
+    } catch (error) {
+      console.error("Error updating save status:", error)
+    } finally {
+      setIsUpdating(false)
+    }
   }
 
   const handleShare = () => {

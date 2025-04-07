@@ -1,5 +1,5 @@
-import type { User, Content, Comment } from "./types";
-import { databases, DATABASES_ID, CONTENT_COLLECTION_ID, USER_PROFILES_COLLECTION_ID } from "./appwrite";
+import type { User, Content, Comment, SavedContent } from "./types";
+import { databases, DATABASES_ID, CONTENT_COLLECTION_ID, USER_PROFILES_COLLECTION_ID, SAVED_CONTENT_COLLECTION_ID } from "./appwrite";
 
 // Define the Comments collection ID
 export const COMMENTS_COLLECTION_ID = "67f123d0002c7cc677f8"; // Correct collection ID
@@ -467,5 +467,145 @@ export async function unlikeContent(contentId: string, userId: string): Promise<
   } catch (error) {
     console.error("Error unliking content:", error);
     return false;
+  }
+}
+
+// Helper function to convert Appwrite document to SavedContent type
+const mapDocumentToSavedContent = (doc: any): SavedContent => {
+  return {
+    id: doc.$id,
+    userId: doc.userId,
+    contentId: doc.contentId,
+    savedAt: doc.savedAt || doc.$createdAt,
+  };
+};
+
+// Check if content is saved by user
+export async function isContentSaved(contentId: string, userId: string): Promise<boolean> {
+  try {
+    const response = await databases.listDocuments(
+      DATABASES_ID,
+      SAVED_CONTENT_COLLECTION_ID,
+      [
+        Query.equal("contentId", contentId),
+        Query.equal("userId", userId)
+      ]
+    );
+    
+    return response.total > 0;
+  } catch (error) {
+    console.error("Error checking if content is saved:", error);
+    return false;
+  }
+}
+
+// Save content
+export async function saveContent(contentId: string, userId: string): Promise<boolean> {
+  try {
+    // Check if already saved
+    const isSaved = await isContentSaved(contentId, userId);
+    if (isSaved) {
+      return false; // Already saved
+    }
+    
+    // Save the content
+    const now = new Date().toISOString();
+    await databases.createDocument(
+      DATABASES_ID,
+      SAVED_CONTENT_COLLECTION_ID,
+      ID.unique(),
+      {
+        userId,
+        contentId,
+        savedAt: now
+      }
+    );
+    
+    return true;
+  } catch (error) {
+    console.error("Error saving content:", error);
+    return false;
+  }
+}
+
+// Unsave content
+export async function unsaveContent(contentId: string, userId: string): Promise<boolean> {
+  try {
+    // Find the saved content document
+    const response = await databases.listDocuments(
+      DATABASES_ID,
+      SAVED_CONTENT_COLLECTION_ID,
+      [
+        Query.equal("contentId", contentId),
+        Query.equal("userId", userId)
+      ]
+    );
+    
+    if (response.total === 0) {
+      return false; // Not saved
+    }
+    
+    // Delete the saved content document
+    const savedContentId = response.documents[0].$id;
+    await databases.deleteDocument(
+      DATABASES_ID,
+      SAVED_CONTENT_COLLECTION_ID,
+      savedContentId
+    );
+    
+    return true;
+  } catch (error) {
+    console.error("Error unsaving content:", error);
+    return false;
+  }
+}
+
+// Toggle save status
+export async function toggleSaveContent(contentId: string, userId: string): Promise<boolean> {
+  try {
+    const isSaved = await isContentSaved(contentId, userId);
+    
+    if (isSaved) {
+      return await unsaveContent(contentId, userId);
+    } else {
+      return await saveContent(contentId, userId);
+    }
+  } catch (error) {
+    console.error("Error toggling save status:", error);
+    return false;
+  }
+}
+
+// Get saved content for a user
+export async function getSavedContent(userId: string): Promise<Content[]> {
+  try {
+    // Get saved content documents
+    const savedResponse = await databases.listDocuments(
+      DATABASES_ID,
+      SAVED_CONTENT_COLLECTION_ID,
+      [
+        Query.equal("userId", userId),
+        Query.orderDesc("savedAt")
+      ]
+    );
+    
+    if (savedResponse.total === 0) {
+      return [];
+    }
+    
+    // Get content IDs
+    const contentIds = savedResponse.documents.map(doc => doc.contentId);
+    
+    // Get content documents
+    const contentPromises = contentIds.map(id => 
+      databases.getDocument(DATABASES_ID, CONTENT_COLLECTION_ID, id)
+    );
+    
+    const contentDocs = await Promise.all(contentPromises);
+    
+    return contentDocs.map(mapDocumentToContent);
+  } catch (error) {
+    console.error("Error fetching saved content:", error);
+    return [];
   }
 }

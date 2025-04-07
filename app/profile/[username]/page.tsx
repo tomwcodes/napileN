@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react"
 import { notFound, useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context" // Import useAuth
-import { getUserContent } from "@/lib/data" // Now updated to use Appwrite
+import { getUserContent, getSavedContent } from "@/lib/data" // Now updated to use Appwrite
 import ContentList from "@/components/content/content-list"
 import PublishedWorksList from "@/components/profile/published-works-list"
+import SavedContentList from "@/components/profile/saved-content-list"
 import UserProfile from "@/components/profile/user-profile"
 import { Skeleton } from "@/components/ui/skeleton" // For loading state
 import type { Content } from "@/lib/types"
@@ -23,7 +24,9 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   const router = useRouter()
   const usernameFromParams = params.username // This is now actually the username
   const [userContent, setUserContent] = useState<Content[]>([])
+  const [savedContent, setSavedContent] = useState<Content[]>([])
   const [contentLoading, setContentLoading] = useState(true)
+  const [savedContentLoading, setSavedContentLoading] = useState(true)
   const [profileUser, setProfileUser] = useState<Models.User<Models.Preferences> | null>(null)
   const [profileLoading, setProfileLoading] = useState(true)
 
@@ -98,6 +101,30 @@ export default function ProfilePage({ params }: ProfilePageProps) {
     }
   }, [profileLoading, profileUser])
 
+  // Fetch saved content from Appwrite
+  useEffect(() => {
+    async function fetchSavedContent() {
+      try {
+        if (!profileUser) {
+          setSavedContentLoading(false)
+          return;
+        }
+        
+        setSavedContentLoading(true)
+        const content = await getSavedContent(profileUser.$id)
+        setSavedContent(content)
+      } catch (error) {
+        console.error("Error fetching saved content:", error)
+      } finally {
+        setSavedContentLoading(false)
+      }
+    }
+
+    if (!profileLoading) {
+      fetchSavedContent()
+    }
+  }, [profileLoading, profileUser])
+
   // Show loading state while data is being fetched
   if (authLoading || profileLoading) {
     return (
@@ -148,6 +175,21 @@ export default function ProfilePage({ params }: ProfilePageProps) {
         ) : (
           // Pass all userContent without filtering by type here
           <PublishedWorksList items={userContent} />
+        )}
+      </div>
+
+      {/* Saved Content Section */}
+      <div className="border-t border-border pt-8">
+        <h2 className="mb-6">Saved Content</h2>
+        {savedContentLoading ? (
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+          </div>
+        ) : (
+          <SavedContentList items={savedContent} />
         )}
       </div>
 

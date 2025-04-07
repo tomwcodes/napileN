@@ -39,3 +39,11 @@ export interface Comment {
   body: string
   createdAt: string
 }
+
+export interface SavedContent {
+  id: string
+  userId: string
+  contentId: string
+  savedAt: string
+  content?: Content // Optional reference to the full content object
+}
