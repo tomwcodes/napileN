@@ -36,9 +36,7 @@ const ContentCard = ({ content }: { content: Content }) => {
         <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto pt-2"> {/* Use justify-between and mt-auto pt-2 */}
           <div className="flex items-center gap-2"> {/* Group author and date */}
             <span>By {content.author.name}</span>
-            <span>·</span>
-            {/* Render formatted date from state, fallback to empty or raw */}
-            <span>{formattedDate ?? ''}</span> 
+            {/* Date removed */}
           </div>
           <div className="flex items-center gap-3"> {/* Group likes and comments */}
             <span className="flex items-center gap-1">
@@ -73,10 +71,10 @@ const ContentGrid = ({ contentList }: { contentList: Content[] }) => {
 }
 
 export default function FeaturedContent({ recentContent, mostPopularContent }: FeaturedContentProps) { // Destructure mostPopularContent
-  const [activeTab, setActiveTab] = useState('new') // Changed default state
+  const [activeTab, setActiveTab] = useState('recent') // Changed default state
 
   // Determine which content list to display based on the active tab
-  const contentToDisplay = activeTab === 'new' ? recentContent : mostPopularContent; // Updated condition
+  const contentToDisplay = activeTab === 'recent' ? recentContent : mostPopularContent; // Updated condition
 
   return (
     <section className="py-12">
@@ -86,12 +84,12 @@ export default function FeaturedContent({ recentContent, mostPopularContent }: F
           {/* View all link removed */}
         </div>
 
-        <Tabs defaultValue="new" value={activeTab} onValueChange={setActiveTab} className="w-full"> {/* Changed defaultValue */}
+        <Tabs defaultValue="recent" value={activeTab} onValueChange={setActiveTab} className="w-full"> {/* Changed defaultValue */}
           <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="new">New</TabsTrigger> {/* Changed value and text */}
+            <TabsTrigger value="recent">Recent</TabsTrigger> {/* Changed value and text */}
             <TabsTrigger value="mostPopular">Most Popular</TabsTrigger>
           </TabsList>
-          <TabsContent value="new"> {/* Changed value */}
+          <TabsContent value="recent"> {/* Changed value */}
             <ContentGrid contentList={recentContent} />
           </TabsContent>
           <TabsContent value="mostPopular">
