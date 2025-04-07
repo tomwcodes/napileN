@@ -15,7 +15,7 @@ export default function WritePage() {
   const [formData, setFormData] = useState({
     title: "",
     body: "",
-    category: "poetry",
+    category: "", // Default to empty string for placeholder
     visibility: "public" // Default visibility for blog posts
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -34,8 +34,8 @@ export default function WritePage() {
       return
     }
 
-    if (!formData.title.trim() || !formData.body.trim()) {
-      setError("Title and body are required")
+    if (!formData.title.trim() || !formData.body.trim() || !formData.category) { // Add category validation
+      setError("Title, body, and category are required")
       return
     }
 
@@ -154,6 +154,7 @@ export default function WritePage() {
             className="form-select"
             required
           >
+            <option value="" disabled>-- Select a category --</option> {/* Added placeholder */}
             <option value="poetry">Poetry</option>
             <option value="fiction">Fiction</option> {/* Changed value="story" to "fiction" and text "Short Story" to "Fiction" */}
             <option value="article">Article</option>
