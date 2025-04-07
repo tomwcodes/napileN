@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { notFound, useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context" // Import useAuth
-import { getUserContent, getSavedContent } from "@/lib/data" // Now updated to use Appwrite
+import { getUserContent, getSavedContent, getUserBlogPosts } from "@/lib/data" // Import getUserBlogPosts
 import ContentList from "@/components/content/content-list"
 import PublishedWorksList from "@/components/profile/published-works-list"
 import SavedContentList from "@/components/profile/saved-content-list"
@@ -25,8 +25,10 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   const usernameFromParams = params.username // This is now actually the username
   const [userContent, setUserContent] = useState<Content[]>([])
   const [savedContent, setSavedContent] = useState<Content[]>([])
+  const [blogPosts, setBlogPosts] = useState<Content[]>([])
   const [contentLoading, setContentLoading] = useState(true)
   const [savedContentLoading, setSavedContentLoading] = useState(true)
+  const [blogLoading, setBlogLoading] = useState(true)
   const [profileUser, setProfileUser] = useState<Models.User<Models.Preferences> | null>(null)
   const [profileLoading, setProfileLoading] = useState(true)
 
@@ -124,6 +126,32 @@ export default function ProfilePage({ params }: ProfilePageProps) {
       fetchSavedContent()
     }
   }, [profileLoading, profileUser])
+  
+  // Fetch blog posts from Appwrite
+  useEffect(() => {
+    async function fetchBlogPosts() {
+      try {
+        if (!profileUser) {
+          setBlogLoading(false)
+          return;
+        }
+        
+        setBlogLoading(true)
+        // Check if the current user is viewing their own profile
+        const isOwner = authUser ? authUser.$id === profileUser.$id : false
+        const posts = await getUserBlogPosts(profileUser.$id, isOwner)
+        setBlogPosts(posts)
+      } catch (error) {
+        console.error("Error fetching blog posts:", error)
+      } finally {
+        setBlogLoading(false)
+      }
+    }
+
+    if (!profileLoading) {
+      fetchBlogPosts()
+    }
+  }, [profileLoading, profileUser, authUser])
 
   // Show loading state while data is being fetched
   if (authLoading || profileLoading) {
@@ -196,7 +224,31 @@ export default function ProfilePage({ params }: ProfilePageProps) {
       {/* Blog Section */}
       <div className="border-t border-border pt-8">
         <h2 className="mb-6">Blog</h2>
-        <p className="text-muted-foreground">Coming soon.</p>
+        {blogLoading ? (
+          <div className="space-y-2">
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+            <Skeleton className="h-8 w-full" />
+          </div>
+        ) : blogPosts.length === 0 ? (
+          <p className="text-muted-foreground">No blog posts yet.</p>
+        ) : (
+          <div className="divide-y divide-border">
+            {blogPosts.map((post) => (
+              <div key={post.id} className="py-4">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-lg font-medium">{post.title}</h3>
+                  {post.visibility === "private" && (
+                    <span className="text-xs bg-muted px-2 py-1 rounded-full">Private</span>
+                  )}
+                </div>
+                <p className="text-muted-foreground text-sm mb-2">{new Date(post.createdAt).toLocaleDateString()}</p>
+                <p className="line-clamp-3">{post.excerpt}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )

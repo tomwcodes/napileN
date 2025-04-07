@@ -5,7 +5,7 @@ import type React from "react"
 import { useState, useEffect } from "react" // Import useEffect
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
-import { createContent } from "@/lib/data" // Import the createContent function
+import { createContent, createBlogPost } from "@/lib/data" // Import createBlogPost function
 import { databases, DATABASES_ID, USER_PROFILES_COLLECTION_ID } from "@/lib/appwrite"
 import { Query } from "appwrite"
 
@@ -16,6 +16,7 @@ export default function WritePage() {
     title: "",
     body: "",
     category: "poetry",
+    visibility: "public" // Default visibility for blog posts
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState("")
@@ -54,22 +55,39 @@ export default function WritePage() {
         ? userProfileResponse.documents[0].username 
         : user.$id;
       
-      // Use the createContent function to save the content to Appwrite
-      const result = await createContent(
-        formData.title,
-        formData.body,
-        formData.category,
-        user.$id,
-        user.name || "Anonymous",
-        username
-      )
+      let result;
+      
+      // If category is blog, use createBlogPost function
+      if (formData.category === "blog") {
+        result = await createBlogPost(
+          formData.title,
+          formData.body,
+          user.$id,
+          username,
+          formData.visibility as "public" | "private"
+        );
+      } else {
+        // For other categories, use the createContent function
+        result = await createContent(
+          formData.title,
+          formData.body,
+          formData.category,
+          user.$id,
+          user.name || "Anonymous",
+          username
+        );
+      }
 
       if (!result) {
         throw new Error("Failed to create content")
       }
 
       // Redirect to the appropriate page based on category
-      router.push(`/${formData.category === "poetry" ? "poetry" : formData.category === "fiction" ? "fiction" : "articles"}`) // Changed "story" to "fiction" and "stories" to "fiction"
+      if (formData.category === "blog") {
+        router.push(`/profile/${username}`); // Redirect to user profile for blog posts
+      } else {
+        router.push(`/${formData.category === "poetry" ? "poetry" : formData.category === "fiction" ? "fiction" : "articles"}`);
+      }
     } catch (err) {
       setError("Failed to submit content. Please try again.")
       console.error(err)
@@ -139,8 +157,34 @@ export default function WritePage() {
             <option value="poetry">Poetry</option>
             <option value="fiction">Fiction</option> {/* Changed value="story" to "fiction" and text "Short Story" to "Fiction" */}
             <option value="article">Article</option>
+            <option value="blog">Blog</option>
           </select>
         </div>
+
+        {/* Visibility toggle for blog posts */}
+        {formData.category === "blog" && (
+          <div className="form-group">
+            <label htmlFor="visibility" className="form-label">
+              Visibility
+            </label>
+            <select
+              id="visibility"
+              name="visibility"
+              value={formData.visibility}
+              onChange={handleChange}
+              className="form-select"
+              required
+            >
+              <option value="public">Public</option>
+              <option value="private">Private</option>
+            </select>
+            <p className="text-sm text-muted-foreground mt-1">
+              {formData.visibility === "public" 
+                ? "Anyone can view this blog post" 
+                : "Only you can view this blog post"}
+            </p>
+          </div>
+        )}
 
         <div className="form-group">
           <label htmlFor="body" className="form-label">

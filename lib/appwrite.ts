@@ -15,6 +15,7 @@ export const DATABASES_ID = '67ef94ce00302fe66895';
 export const CONTENT_COLLECTION_ID = '67ef94e80005b889897a';
 export const USER_PROFILES_COLLECTION_ID = '67ef9774000e4d09d47a';
 export const SAVED_CONTENT_COLLECTION_ID = '67f38ed9002317506cff';
+export const USER_BLOG_COLLECTION_ID = '67f29be800028755c0a6';
 
 const client = new Client();
 

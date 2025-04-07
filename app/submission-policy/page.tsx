@@ -7,7 +7,7 @@ export default function SubmissionPolicyPage() {
       
       {/* Removed prose, added inline-block and text-left for centered block */}
       <div className="inline-block text-left max-w-2xl space-y-6"> {/* Added max-width and spacing */}
-        <p>Welcome to NapileN — we're excited to read your work! Before submitting, please review the following guidelines to help ensure a smooth and respectful publishing process.</p>
+        <p>Welcome to Napile — we're excited to read your work! Before submitting, please review the following guidelines to help ensure a smooth and respectful publishing process.</p>
 
         <h2 className="text-2xl font-semibold pt-4">General Guidelines</h2> {/* Added padding-top */}
         <ul>
@@ -23,7 +23,7 @@ export default function SubmissionPolicyPage() {
         <h2 className="text-2xl font-semibold pt-4">Response Time</h2> {/* Added padding-top */}
         <p>We aim to check and upload your submission within 48 hours.</p>
 
-        <p className="pt-4">Thank you for considering NapileN as a home for your writing. We look forward to reading your work!</p> {/* Added padding-top */}
+        <p className="pt-4">Thank you for considering Napile as a home for your writing. We look forward to reading your work!</p> {/* Added padding-top */}
       </div>
     </div>
   );

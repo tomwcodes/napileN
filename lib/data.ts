@@ -1,5 +1,5 @@
 import type { User, Content, Comment, SavedContent } from "./types";
-import { databases, DATABASES_ID, CONTENT_COLLECTION_ID, USER_PROFILES_COLLECTION_ID, SAVED_CONTENT_COLLECTION_ID } from "./appwrite";
+import { databases, DATABASES_ID, CONTENT_COLLECTION_ID, USER_PROFILES_COLLECTION_ID, SAVED_CONTENT_COLLECTION_ID, USER_BLOG_COLLECTION_ID } from "./appwrite";
 
 // Define the Comments collection ID
 export const COMMENTS_COLLECTION_ID = "67f123d0002c7cc677f8"; // Correct collection ID
@@ -606,6 +606,92 @@ export async function getSavedContent(userId: string): Promise<Content[]> {
     return contentDocs.map(mapDocumentToContent);
   } catch (error) {
     console.error("Error fetching saved content:", error);
+    return [];
+  }
+}
+
+// Helper function to convert Appwrite blog document to Content type
+const mapBlogDocumentToContent = (doc: any): Content => {
+  return {
+    id: doc.$id,
+    title: doc.title,
+    slug: doc.$id, // Using document ID as slug for now
+    body: doc.body,
+    excerpt: doc.body.substring(0, 150) + "...", // Generate excerpt from body
+    type: "blog",
+    author: {
+      id: doc.userId,
+      name: doc.username, // Use username as name
+      username: doc.username,
+    },
+    createdAt: doc.createdAt || doc.$createdAt,
+    likes: 0, // Blogs don't have likes for now
+    likedBy: [], // Blogs don't have likes for now
+    featured: false, // Default value
+    comments: [], // Default empty array
+    commentCount: 0, // Blogs don't have comments for now
+    visibility: doc.visibility || "public", // Default to public if not specified
+  };
+};
+
+// Create a new blog post
+export async function createBlogPost(
+  title: string,
+  body: string,
+  userId: string,
+  username: string,
+  visibility: "public" | "private" = "public"
+): Promise<Content | null> {
+  try {
+    // Create the blog document in Appwrite
+    const now = new Date().toISOString();
+    const response = await databases.createDocument(
+      DATABASES_ID,
+      USER_BLOG_COLLECTION_ID,
+      ID.unique(),
+      {
+        title,
+        body,
+        userId,
+        username,
+        createdAt: now,
+        visibility
+      }
+    );
+    
+    return mapBlogDocumentToContent(response);
+  } catch (error) {
+    console.error("Error creating blog post:", error);
+    return null;
+  }
+}
+
+// Get blog posts for a user
+export async function getUserBlogPosts(
+  userId: string, 
+  isOwner: boolean = false
+): Promise<Content[]> {
+  try {
+    // If viewing own profile, get all blog posts (public and private)
+    // If viewing someone else's profile, get only public blog posts
+    const queries = [
+      Query.equal("userId", userId),
+      Query.orderDesc("createdAt")
+    ];
+    
+    if (!isOwner) {
+      queries.push(Query.equal("visibility", "public"));
+    }
+    
+    const response = await databases.listDocuments(
+      DATABASES_ID,
+      USER_BLOG_COLLECTION_ID,
+      queries
+    );
+    
+    return response.documents.map(mapBlogDocumentToContent);
+  } catch (error) {
+    console.error("Error fetching user blog posts:", error);
     return [];
   }
 }

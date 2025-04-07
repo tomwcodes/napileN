@@ -14,7 +14,7 @@ export interface Content {
   slug: string
   body: string
   excerpt: string
-  type: "poetry" | "fiction" | "article" // Changed "story" to "fiction"
+  type: "poetry" | "fiction" | "article" | "blog" // Added "blog" type
   author: {
     id: string
     name: string
@@ -26,6 +26,7 @@ export interface Content {
   featured: boolean
   comments: Comment[]
   commentCount?: number
+  visibility?: "public" | "private" // Added visibility field for blog posts
 }
 
 export interface Comment {
