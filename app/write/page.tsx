@@ -121,7 +121,7 @@ export default function WritePage() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="mb-6">Write Something New</h1>
+      <h1 className="mb-6">Write Something</h1>
 
       {error && <div className="bg-red-50 border border-red-200 text-red-800 p-4 mb-6 rounded-sm">{error}</div>}
 

@@ -1,6 +1,6 @@
 import Link from "next/link"
 import type { Content } from "@/lib/types"
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, ThumbsUp, MessageSquare } from "lucide-react"
 
 interface BlogPostsListProps {
   items: Content[]
@@ -27,12 +27,25 @@ export default function BlogPostsList({ items, isOwner }: BlogPostsListProps) {
           className="flex items-center justify-between py-3 px-3 hover:bg-muted/50 transition-colors hover:no-underline"
         >
           <div className="flex items-center gap-3 overflow-hidden">
-            <span className="text-xs uppercase tracking-wider text-muted-foreground min-w-16">Blog</span>
+            {/* Replace "Blog" with Date */}
+            <span className="text-xs uppercase tracking-wider text-muted-foreground min-w-16">
+              {new Date(item.createdAt).toLocaleDateString()}
+            </span>
             <span className="font-medium text-foreground truncate">{item.title}</span>
           </div>
           
           <div className="flex items-center gap-4 shrink-0">
             <div className="flex items-center gap-3">
+              {/* Add Likes and Comments */}
+              <div className="flex items-center gap-1 text-muted-foreground">
+                <ThumbsUp size={14} />
+                <span className="text-xs">{item.likes}</span>
+              </div>
+              <div className="flex items-center gap-1 text-muted-foreground">
+                <MessageSquare size={14} />
+                <span className="text-xs">{item.commentCount || 0}</span>
+              </div>
+
               {/* Show visibility icon if user is the owner */}
               {isOwner && (
                 <div className="flex items-center gap-1 text-muted-foreground">
@@ -44,10 +57,7 @@ export default function BlogPostsList({ items, isOwner }: BlogPostsListProps) {
                 </div>
               )}
               
-              {/* Show date */}
-              <span className="text-xs text-muted-foreground">
-                {new Date(item.createdAt).toLocaleDateString()}
-              </span>
+              {/* Date removed from here */}
             </div>
           </div>
         </Link>
