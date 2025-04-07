@@ -27,12 +27,12 @@ export default function SavedContentList({ items }: SavedContentListProps) {
         >
           <div className="flex items-center gap-3 overflow-hidden">
             <span className="text-xs uppercase tracking-wider text-muted-foreground min-w-16">{item.type}</span>
+            <span className="text-xs text-muted-foreground">by {item.author.name}</span>
             <span className="font-medium text-foreground truncate">{item.title}</span>
           </div>
           
           <div className="flex items-center gap-4 shrink-0">
-            <span className="text-xs text-muted-foreground">{new Date(item.createdAt).toLocaleDateString()}</span>
-            
+            {/* Date removed */}
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1 text-muted-foreground">
                 <ThumbsUp size={14} />

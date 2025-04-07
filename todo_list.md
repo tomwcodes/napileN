@@ -7,7 +7,6 @@ Here are the next steps to fully integrate Appwrite and enhance the application:
 - [ ] **Error Handling:** Review and potentially enhance error handling across components interacting with Appwrite.
 - [ ] **Loading States:** Improve loading state indicators (e.g., using skeletons) in components that fetch data asynchronously. (Basic skeleton added to profile page, review others).
 
-- your blog installation
 - you may also like section algorithm
 - deleting posts and users
 - if no spaces text overlaps screen
