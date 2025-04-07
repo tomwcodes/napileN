@@ -34,8 +34,7 @@ export default function PublishedWorksList({ items }: PublishedWorksListProps) {
           </div>
           
           <div className="flex items-center gap-4 shrink-0">
-            <span className="text-xs text-muted-foreground">{new Date(item.createdAt).toLocaleDateString()}</span>
-            
+            {/* Date removed */}
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-1 text-muted-foreground">
                 <ThumbsUp size={14} />

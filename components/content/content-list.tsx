@@ -47,9 +47,8 @@ export default function ContentList({ items, type }: ContentListProps) {
               </div>
               
               <div className="flex items-center justify-between w-full">
-                <span className="text-xs text-muted-foreground">{new Date(item.createdAt).toLocaleDateString()}</span>
-                
-                <div className="flex items-center gap-4">
+                {/* Date removed from mobile view */}
+                <div className="flex items-center gap-4 ml-auto"> {/* Added ml-auto to push icons right */}
                   <div className="flex items-center gap-1 text-muted-foreground">
                     <ThumbsUp size={14} />
                     <span className="text-xs">{item.likes}</span>
@@ -77,7 +76,7 @@ export default function ContentList({ items, type }: ContentListProps) {
                 >
                   {item.author.name}
                 </span>
-                <span className="text-xs text-muted-foreground shrink-0">{new Date(item.createdAt).toLocaleDateString()}</span>
+                {/* Date removed from desktop view */}
               </div>
               
               <div className="flex items-center gap-4 shrink-0">
