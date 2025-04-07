@@ -2,38 +2,28 @@ import React from 'react';
 
 export default function SubmissionPolicyPage() {
   return (
-    <div className="container mx-auto px-4 py-12">
-      <h1 className="text-3xl font-semibold mb-6">Submission Policy</h1>
+    <div className="container mx-auto px-4 py-12 text-center"> {/* Added text-center */}
+      <h1 className="text-3xl font-semibold mb-8">Submission Policy</h1> {/* Increased margin */}
       
-      <div className="prose max-w-none">
-        <p>Welcome to NapileN! We are excited to read your work. Please review the following guidelines before submitting.</p>
+      {/* Removed prose, added inline-block and text-left for centered block */}
+      <div className="inline-block text-left max-w-2xl space-y-6"> {/* Added max-width and spacing */}
+        <p>Welcome to NapileN — we're excited to read your work! Before submitting, please review the following guidelines to help ensure a smooth and respectful publishing process.</p>
 
-        <h2>General Guidelines</h2>
+        <h2 className="text-2xl font-semibold pt-4">General Guidelines</h2> {/* Added padding-top */}
         <ul>
-          <li>All submissions must be original work by the author.</li>
-          <li>We accept submissions in Poetry, Fiction, and Articles categories.</li>
-          <li>Simultaneous submissions are allowed, but please notify us immediately if your work is accepted elsewhere.</li>
+          <li>Submissions must be original work by the author.</li>
+          <li>We currently accept work in the following categories: Poetry, Fiction, and Articles.</li>
+          <li>Political content is not accepted. We aim to create a space focused on creativity, reflection, and artistic expression, free from partisan or political themes.</li>
           <li>Please proofread your work carefully before submitting.</li>
         </ul>
 
-        <h2>Formatting</h2>
-        <p>Please format your submissions as follows:</p>
-        <ul>
-          <li>Use a standard, readable font (e.g., Times New Roman, Arial) in 12pt size.</li>
-          <li>Double-space fiction and articles. Single-space poetry, unless formatting is integral to the poem.</li>
-          <li>Include your name and email address on the first page.</li>
-        </ul>
+        <h2 className="text-2xl font-semibold pt-4">How to Submit</h2> {/* Added padding-top */}
+        <p>To submit your work, use the “Write” link in the navigation bar. Please ensure you select the correct category for your submission.</p>
 
-        <h2>Rights</h2>
-        <p>If your work is accepted, NapileN acquires First Electronic Rights. All rights revert to the author upon publication.</p>
+        <h2 className="text-2xl font-semibold pt-4">Response Time</h2> {/* Added padding-top */}
+        <p>We aim to check and upload your submission within 48 hours.</p>
 
-        <h2>How to Submit</h2>
-        <p>Please use the "Write" link in the navigation bar to access the submission form. Ensure you select the correct category for your work.</p>
-
-        <h2>Response Time</h2>
-        <p>We aim to respond to all submissions within 4-6 weeks. If you haven't heard back after 8 weeks, feel free to query.</p>
-
-        <p>Thank you for considering NapileN for your creative work!</p>
+        <p className="pt-4">Thank you for considering NapileN as a home for your writing. We look forward to reading your work!</p> {/* Added padding-top */}
       </div>
     </div>
   );
