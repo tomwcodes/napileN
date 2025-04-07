@@ -7,6 +7,7 @@ import { getUserContent, getSavedContent, getUserBlogPosts } from "@/lib/data" /
 import ContentList from "@/components/content/content-list"
 import PublishedWorksList from "@/components/profile/published-works-list"
 import SavedContentList from "@/components/profile/saved-content-list"
+import BlogPostsList from "@/components/profile/blog-posts-list"
 import UserProfile from "@/components/profile/user-profile"
 import { Skeleton } from "@/components/ui/skeleton" // For loading state
 import type { Content } from "@/lib/types"
@@ -231,23 +232,11 @@ export default function ProfilePage({ params }: ProfilePageProps) {
             <Skeleton className="h-8 w-full" />
             <Skeleton className="h-8 w-full" />
           </div>
-        ) : blogPosts.length === 0 ? (
-          <p className="text-muted-foreground">No blog posts yet.</p>
         ) : (
-          <div className="divide-y divide-border">
-            {blogPosts.map((post) => (
-              <div key={post.id} className="py-4">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-medium">{post.title}</h3>
-                  {post.visibility === "private" && (
-                    <span className="text-xs bg-muted px-2 py-1 rounded-full">Private</span>
-                  )}
-                </div>
-                <p className="text-muted-foreground text-sm mb-2">{new Date(post.createdAt).toLocaleDateString()}</p>
-                <p className="line-clamp-3">{post.excerpt}</p>
-              </div>
-            ))}
-          </div>
+          <BlogPostsList 
+            items={blogPosts} 
+            isOwner={authUser ? authUser.$id === profileUser?.$id : false} 
+          />
         )}
       </div>
     </div>
