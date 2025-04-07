@@ -70,9 +70,12 @@ export default function Footer() {
           </div> */}
         </div>
 
-        <div className="border-t border-border mt-8 pt-8 text-center text-muted-foreground">
+        <div className="border-t border-border mt-8 pt-8 text-center text-muted-foreground space-y-2"> {/* Added space-y-2 */}
+          <Link href="/submission-policy" className="text-sm hover:text-accent">
+            Submission Policy
+          </Link>
           {/* Render the year only when the state is set */}
-          <p>&copy; {currentYear ?? new Date().getFullYear()} Verse. All rights reserved.</p> 
+          <p className="text-sm">&copy; {currentYear ?? new Date().getFullYear()} Verse. All rights reserved.</p> {/* Added text-sm */}
           {/* Added fallback for initial render/SSR, though useEffect should handle it */}
         </div>
       </div>
