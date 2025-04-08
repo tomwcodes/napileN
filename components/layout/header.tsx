@@ -279,11 +279,7 @@ export default function Header() {
                 <Skeleton className="h-10 w-full rounded-md" />
               </div>
             ) : user ? (
-              <div className="pt-3 border-t border-gray-100 mt-2">
-                <Link href="/settings" className={getMobileLinkClass("/settings")} onClick={toggleMenu}>
-                  Account Settings
-                </Link>
-              </div>
+              null // Removed Account Settings link as it's in the avatar dropdown
             ) : (
               <div className="flex flex-col gap-3 pt-3">
                 <Link
