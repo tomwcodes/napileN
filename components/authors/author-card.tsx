@@ -11,7 +11,7 @@ interface AuthorCardProps {
 
 export default function AuthorCard({ author }: AuthorCardProps) {
   return (
-    <Link href={`/authors/${author.username}`} className="block hover:no-underline">
+    <Link href={`/profile/${author.username}`} className="block hover:no-underline">
       <Card className="h-full transition-all hover:shadow-md">
         <CardContent className="p-4 flex flex-col items-center text-center">
           <div className="mb-4 mt-2">
