@@ -32,10 +32,10 @@ const mapDocumentToContent = (doc: any): Content => {
 const mapDocumentToUser = (doc: any): User => {
   return {
     id: doc.userId,
-    name: doc.username, // Using username as name for now
+    name: doc.displayName || doc.username, // Use displayName, fallback to username
     username: doc.username,
     email: "", // Email not stored in user profiles collection
-    bio: "", // Bio not stored in user profiles collection
+    bio: doc.bio || "", // Use bio if available
     createdAt: doc.$createdAt,
     publicationCount: 0, // Could be calculated separately
   };
