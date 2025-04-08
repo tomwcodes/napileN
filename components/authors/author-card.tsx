@@ -27,11 +27,6 @@ export default function AuthorCard({ author }: AuthorCardProps) {
           <div>
             <h3 className="font-medium text-lg mb-1">{author.name}</h3>
             <p className="text-sm text-muted-foreground mb-2">@{author.username}</p>
-            
-            <div className="text-sm text-muted-foreground">
-              <p>Publications: {author.publicationCount}</p>
-              <p className="mt-1">Joined: {new Date(author.createdAt).toLocaleDateString()}</p>
-            </div>
           </div>
         </CardContent>
       </Card>
