@@ -157,8 +157,7 @@ export default function ProfileSection({ user, userProfile }: ProfileSectionProp
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <span role="img" aria-label="Profile">🧍</span>
+        <CardTitle>
           Profile Information
         </CardTitle>
         <CardDescription>

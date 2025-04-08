@@ -56,8 +56,7 @@ export default function DangerZoneSection() {
     <>
       <Card className="border-destructive/20">
         <CardHeader className="text-destructive">
-          <CardTitle className="flex items-center gap-2">
-            <span role="img" aria-label="Danger">💣</span>
+          <CardTitle>
             Danger Zone
           </CardTitle>
           <CardDescription className="text-destructive/80">

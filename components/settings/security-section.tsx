@@ -83,8 +83,7 @@ export default function SecuritySection({ user }: SecuritySectionProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <span role="img" aria-label="Security">🔐</span>
+        <CardTitle>
           Security
         </CardTitle>
         <CardDescription>

@@ -154,7 +154,7 @@ export default function Header() {
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild className="cursor-pointer focus:bg-gray-100 focus:text-gray-900">
-                    <Link href="/settings" className="flex w-full items-center">
+                    <Link href="/settings" className="flex w-full items-center justify-center">
                       <span>Account Settings</span>
                     </Link>
                   </DropdownMenuItem>
@@ -216,7 +216,7 @@ export default function Header() {
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild className="cursor-pointer focus:bg-gray-100 focus:text-gray-900">
-                    <Link href="/settings" className="flex w-full items-center">
+                    <Link href="/settings" className="flex w-full items-center justify-center">
                       <span>Account Settings</span>
                     </Link>
                   </DropdownMenuItem>
