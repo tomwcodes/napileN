@@ -20,7 +20,6 @@ export default function AuthorsPage() {
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [searchQuery, setSearchQuery] = useState("")
-  const [sortBy, setSortBy] = useState<'alphabetical' | 'popular'>('alphabetical')
   
   const authorsPerPage = 12
   const totalPages = Math.ceil(totalAuthors / authorsPerPage)
@@ -30,7 +29,8 @@ export default function AuthorsPage() {
     async function fetchAuthors() {
       setLoading(true)
       try {
-        const result = await getAllUsers(currentPage, authorsPerPage, sortBy, searchQuery)
+        // Removed sortBy from getAllUsers call
+        const result = await getAllUsers(currentPage, authorsPerPage, searchQuery) 
         setAuthors(result.users)
         setTotalAuthors(result.total)
       } catch (error) {
@@ -41,18 +41,12 @@ export default function AuthorsPage() {
     }
     
     fetchAuthors()
-  }, [currentPage, searchQuery, sortBy])
+  }, [currentPage, searchQuery]) // Removed sortBy dependency
   
   // Handle search
   const handleSearch = (query: string) => {
     setSearchQuery(query)
     setCurrentPage(1) // Reset to first page on new search
-  }
-  
-  // Handle sort
-  const handleSort = (newSortBy: 'alphabetical' | 'popular') => {
-    setSortBy(newSortBy)
-    setCurrentPage(1) // Reset to first page on new sort
   }
   
   // Handle page change
@@ -132,7 +126,8 @@ export default function AuthorsPage() {
     <div className="container py-8">
       <h1 className="text-3xl font-bold mb-8">Authors</h1>
       
-      <AuthorsFilter onSearch={handleSearch} onSort={handleSort} />
+      {/* Removed onSort prop */}
+      <AuthorsFilter onSearch={handleSearch} /> 
       
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

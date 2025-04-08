@@ -186,8 +186,7 @@ export async function getUserByEmail(email: string): Promise<User | null> {
 export async function getAllUsers(
   page: number = 1, 
   limit: number = 10, 
-  sortBy: 'alphabetical' | 'popular' = 'alphabetical',
-  searchQuery?: string
+  searchQuery?: string // Removed sortBy parameter
 ): Promise<{ users: User[], total: number }> {
   try {
     const queries = [];
@@ -195,14 +194,12 @@ export async function getAllUsers(
     // Add search query if provided
     if (searchQuery && searchQuery.trim() !== '') {
       queries.push(Query.search('username', searchQuery));
+      // Also search displayName if needed
+      // queries.push(Query.search('displayName', searchQuery)); // Uncomment if displayName should be searchable
     }
     
-    // Add sorting
-    if (sortBy === 'alphabetical') {
-      queries.push(Query.orderAsc('username'));
-    } else if (sortBy === 'popular') {
-      queries.push(Query.orderDesc('publicationCount'));
-    }
+    // Default sorting (e.g., by username alphabetically)
+    queries.push(Query.orderAsc('username')); 
     
     // Add pagination
     queries.push(Query.limit(limit));

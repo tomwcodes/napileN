@@ -5,12 +5,10 @@ import { Search } from "lucide-react"
 
 interface AuthorsFilterProps {
   onSearch: (query: string) => void
-  onSort: (sortBy: 'alphabetical' | 'popular') => void
 }
 
-export default function AuthorsFilter({ onSearch, onSort }: AuthorsFilterProps) {
+export default function AuthorsFilter({ onSearch }: AuthorsFilterProps) {
   const [searchTerm, setSearchTerm] = useState("")
-  const [sortBy, setSortBy] = useState<'alphabetical' | 'popular'>('alphabetical')
   
   // Debounce search to avoid too many requests
   useEffect(() => {
@@ -20,12 +18,6 @@ export default function AuthorsFilter({ onSearch, onSort }: AuthorsFilterProps) 
     
     return () => clearTimeout(timer)
   }, [searchTerm, onSearch])
-  
-  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value as 'alphabetical' | 'popular'
-    setSortBy(value)
-    onSort(value)
-  }
 
   return (
     <div className="flex flex-col md:flex-row gap-4 justify-between mb-6">
@@ -41,22 +33,6 @@ export default function AuthorsFilter({ onSearch, onSort }: AuthorsFilterProps) 
           />
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={18} />
         </div>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <label htmlFor="sort" className="text-sm whitespace-nowrap">
-          Sort by:
-        </label>
-        <select 
-          id="sort" 
-          value={sortBy} 
-          onChange={handleSortChange} 
-          className="form-select"
-          aria-label="Sort authors"
-        >
-          <option value="alphabetical">Alphabetical</option>
-          <option value="popular">Most Popular</option>
-        </select>
       </div>
     </div>
   )
