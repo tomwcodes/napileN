@@ -182,6 +182,48 @@ export async function getUserByEmail(email: string): Promise<User | null> {
   return null;
 }
 
+// Get all users
+export async function getAllUsers(
+  page: number = 1, 
+  limit: number = 10, 
+  sortBy: 'alphabetical' | 'popular' = 'alphabetical',
+  searchQuery?: string
+): Promise<{ users: User[], total: number }> {
+  try {
+    const queries = [];
+    
+    // Add search query if provided
+    if (searchQuery && searchQuery.trim() !== '') {
+      queries.push(Query.search('username', searchQuery));
+    }
+    
+    // Add sorting
+    if (sortBy === 'alphabetical') {
+      queries.push(Query.orderAsc('username'));
+    } else if (sortBy === 'popular') {
+      queries.push(Query.orderDesc('publicationCount'));
+    }
+    
+    // Add pagination
+    queries.push(Query.limit(limit));
+    queries.push(Query.offset((page - 1) * limit));
+    
+    const response = await databases.listDocuments(
+      DATABASES_ID,
+      USER_PROFILES_COLLECTION_ID,
+      queries
+    );
+    
+    return {
+      users: response.documents.map(mapDocumentToUser),
+      total: response.total
+    };
+  } catch (error) {
+    console.error("Error fetching all users:", error);
+    return { users: [], total: 0 };
+  }
+}
+
 // Get content by user ID
 export async function getUserContent(userId: string): Promise<Content[]> {
   try {

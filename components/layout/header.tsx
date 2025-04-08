@@ -217,6 +217,9 @@ export default function Header() {
             <Link href="/articles" className={getLinkClass("/articles")}>
               Articles
             </Link>
+            <Link href="/authors" className={getLinkClass("/authors")}>
+              Authors
+            </Link>
           </nav>
 
           {/* Auth Links/Buttons - Column 3 */}
@@ -433,6 +436,9 @@ export default function Header() {
             </Link>
             <Link href="/articles" className={getMobileLinkClass("/articles")} onClick={toggleMenu}>
               Articles
+            </Link>
+            <Link href="/authors" className={getMobileLinkClass("/authors")} onClick={toggleMenu}>
+              Authors
             </Link>
             
             {/* === Mobile Login/Signup Section === */}
