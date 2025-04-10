@@ -145,6 +145,31 @@ export default function ProfileSection({ user, userProfile }: ProfileSectionProp
     const file = e.target.files?.[0];
     if (!file || !userProfile) return;
 
+    // --- Client-side Validation ---
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+    const maxSizeInBytes = 5 * 1024 * 1024; // 5MB
+
+    if (!allowedTypes.includes(file.type)) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload a JPEG, PNG, GIF, or WEBP image.",
+        variant: "destructive",
+      });
+      e.target.value = ""; // Reset file input
+      return;
+    }
+
+    if (file.size > maxSizeInBytes) {
+      toast({
+        title: "File too large",
+        description: `Please upload an image smaller than ${maxSizeInBytes / 1024 / 1024}MB.`,
+        variant: "destructive",
+      });
+      e.target.value = ""; // Reset file input
+      return;
+    }
+    // --- End Validation ---
+
     setIsUploading(true);
     const previousFileId = avatarFileId; // Store old ID for potential deletion
 
@@ -282,7 +307,7 @@ export default function ProfileSection({ user, userProfile }: ProfileSectionProp
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground">
-                Recommended: Square image, at least 400x400 pixels.
+                Allowed: JPG, PNG, GIF, WEBP. Max size: 5MB. Recommended: Square image.
               </p>
             </div>
           </div>
