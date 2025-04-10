@@ -1,18 +1,18 @@
 "use client" // Add "use client" because we need hooks
 
-import { useEffect, useState } from "react"
-import { notFound, useRouter } from "next/navigation"
-import { useAuth } from "@/lib/auth-context" // Import useAuth
-import { getUserContent, getSavedContent, getUserBlogPosts } from "@/lib/data" // Import getUserBlogPosts
-import ContentList from "@/components/content/content-list"
+import { useEffect, useState } from "react";
+import { notFound, useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth-context"; // Import useAuth
+import { getUserContent, getSavedContent, getUserBlogPosts } from "@/lib/data"; // Import getUserBlogPosts
+import ContentList from "@/components/content/content-list";
 import PublishedWorksList from "@/components/profile/published-works-list"
-import SavedContentList from "@/components/profile/saved-content-list"
-import BlogPostsList from "@/components/profile/blog-posts-list"
-import UserProfile from "@/components/profile/user-profile"
-import { Skeleton } from "@/components/ui/skeleton" // For loading state
-import type { Content } from "@/lib/types"
-import { account, databases, DATABASES_ID, USER_PROFILES_COLLECTION_ID } from "@/lib/appwrite" // Import Appwrite services and constants
-import { Models, Query } from "appwrite" // Import Appwrite Models and Query
+import SavedContentList from "@/components/profile/saved-content-list";
+import BlogPostsList from "@/components/profile/blog-posts-list";
+import UserProfile from "@/components/profile/user-profile";
+import { Skeleton } from "@/components/ui/skeleton"; // For loading state
+import type { Content } from "@/lib/types";
+import { account, databases, storage, DATABASES_ID, USER_PROFILES_COLLECTION_ID, PROFILE_PICTURES_BUCKET_ID } from "@/lib/appwrite"; // Import Appwrite services and constants, added storage and BUCKET_ID
+import { Models, Query } from "appwrite"; // Import Appwrite Models and Query
 
 interface ProfilePageProps {
   params: {
@@ -28,10 +28,11 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   const [savedContent, setSavedContent] = useState<Content[]>([])
   const [blogPosts, setBlogPosts] = useState<Content[]>([])
   const [contentLoading, setContentLoading] = useState(true)
-  const [savedContentLoading, setSavedContentLoading] = useState(true)
-  const [blogLoading, setBlogLoading] = useState(true)
-  const [profileUser, setProfileUser] = useState<Models.User<Models.Preferences> | null>(null)
-  const [profileLoading, setProfileLoading] = useState(true)
+  const [savedContentLoading, setSavedContentLoading] = useState(true);
+  const [blogLoading, setBlogLoading] = useState(true);
+  const [profileUser, setProfileUser] = useState<any | null>(null); // Using 'any' temporarily for easier object construction
+  const [profileLoading, setProfileLoading] = useState(true);
+  const [avatarDisplayUrl, setAvatarDisplayUrl] = useState<string>("/placeholder-user.jpg"); // State for avatar URL
 
   // Fetch profile user data
   useEffect(() => {
@@ -48,37 +49,49 @@ export default function ProfilePage({ params }: ProfilePageProps) {
         
         if (userProfileResponse.documents.length === 0) {
           // No user found with this username
-          setProfileUser(null)
+          setProfileUser(null);
+          setAvatarDisplayUrl("/placeholder-user.jpg"); // Reset avatar on not found
         } else {
           const userProfile = userProfileResponse.documents[0];
           const userId = userProfile.userId;
-          
-          // If the profile is for the current user, use the auth context data
-          if (authUser && authUser.$id === userId) {
-            setProfileUser(authUser)
-          } else {
-            // For other users, create a mock user object
-            const mockUser = {
-              $id: userId,
-              name: userProfile.username, // Use username as name if no name is available
-              $createdAt: userProfile.$createdAt,
-            } as unknown as Models.User<Models.Preferences>;
-            
-            setProfileUser(mockUser);
+          const avatarFileId = userProfile.avatarFileId || null;
+
+          // Generate avatar URL immediately
+          let currentAvatarUrl = "/placeholder-user.jpg";
+          if (avatarFileId) {
+            try {
+              currentAvatarUrl = storage.getFileView(PROFILE_PICTURES_BUCKET_ID, avatarFileId).toString();
+            } catch (urlError) {
+              console.error("Error generating avatar URL on profile page:", urlError);
+            }
           }
-        }
+          setAvatarDisplayUrl(currentAvatarUrl);
+
+          // Construct the profileUser object, including necessary fields for UserProfile component
+          const constructedProfileUser = {
+            $id: userId,
+            name: userProfile.displayName || userProfile.username, // Prefer display name
+            username: userProfile.username,
+            bio: userProfile.bio || "", // Assuming bio exists in profile
+            $createdAt: userProfile.$createdAt,
+            // Add other fields expected by UserProfile component if necessary
+          };
+
+          setProfileUser(constructedProfileUser);
+        } // <-- Corrected closing brace for the 'else' block
       } catch (error) {
-        console.error("Error fetching profile user:", error)
-        setProfileUser(null)
+        console.error("Error fetching profile user:", error);
+        setProfileUser(null);
+        setAvatarDisplayUrl("/placeholder-user.jpg"); // Reset avatar on error
       } finally {
-        setProfileLoading(false)
+        setProfileLoading(false);
       }
     }
 
     if (!authLoading) {
-      fetchProfileUser()
+      fetchProfileUser();
     }
-  }, [authLoading, authUser, usernameFromParams])
+  }, [authLoading, authUser, usernameFromParams]); // Removed avatarDisplayUrl dependency here, URL is set within the effect
 
   // Fetch user content from Appwrite
   useEffect(() => {
@@ -188,8 +201,8 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   // If loading is done and profile user is found, render the profile
   return (
     <div className="space-y-8">
-      {/* Pass the profile user object to UserProfile */}
-      <UserProfile user={profileUser} />
+      {/* Pass the profile user object and avatar URL to UserProfile */}
+      <UserProfile user={profileUser} avatarUrl={avatarDisplayUrl} />
 
       {/* Published Content Section */}
       <div className="border-t border-border pt-8">

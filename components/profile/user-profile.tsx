@@ -1,17 +1,27 @@
 "use client"; // Add "use client" because we're using hooks like useState, useEffect, and useAuth
 
 import { useState, useEffect } from "react";
-import { Models, Query } from "appwrite"; // Import Appwrite Models
-import { databases, DATABASES_ID, USER_PROFILES_COLLECTION_ID } from "@/lib/appwrite";
+import { Models } from "appwrite"; // Import Appwrite Models
 import { useAuth } from "@/lib/auth-context"; // Import useAuth
 import { Button } from "@/components/ui/button"; // Import Button
 import Link from "next/link"; // Import Link
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"; // Import Avatar components
 
-interface UserProfileProps {
-  user: Models.User<Models.Preferences> | null; // Allow null user
+// Define a simpler type for the expected user prop structure
+interface ProfileUserData {
+  $id: string;
+  name: string; // Display name or username
+  username: string;
+  bio?: string;
+  $createdAt: string;
 }
 
-export default function UserProfile({ user }: UserProfileProps) {
+interface UserProfileProps {
+  user: ProfileUserData | null; // Use the simpler type, allow null
+  avatarUrl: string; // Add avatarUrl prop
+}
+
+export default function UserProfile({ user, avatarUrl }: UserProfileProps) {
   // Handle null user case
   if (!user) {
     return (
@@ -30,35 +40,10 @@ export default function UserProfile({ user }: UserProfileProps) {
   }
 
   // Appwrite SDK typically returns ISO string for $createdAt
+  // Data is now passed via props, remove internal fetching
   const joinedDate = user.$createdAt ? new Date(user.$createdAt).toLocaleDateString() : "N/A";
-
-  // Get username and displayName from user profile
-  const [username, setUsername] = useState<string | null>(null);
-  const [displayName, setDisplayName] = useState<string | null>(null);
-  
-  useEffect(() => {
-    async function fetchUserProfile() {
-      if (!user) return;
-      
-      try {
-        const response = await databases.listDocuments(
-          DATABASES_ID,
-          USER_PROFILES_COLLECTION_ID,
-          [Query.equal("userId", user.$id)]
-        );
-        
-        if (response.documents.length > 0) {
-          const userProfile = response.documents[0];
-          setUsername(userProfile.username);
-          setDisplayName(userProfile.displayName || userProfile.username);
-        }
-      } catch (error) {
-        console.error("Error fetching user profile:", error);
-      }
-    }
-    
-    fetchUserProfile();
-  }, [user]);
+  const displayName = user.name; // Directly use prop
+  const username = user.username; // Directly use prop
 
   // Get the currently authenticated user
   const { user: authUser, loading: authLoading } = useAuth();
@@ -69,14 +54,17 @@ export default function UserProfile({ user }: UserProfileProps) {
   return (
     <div className="space-y-6">
       <div className="flex flex-row gap-6 items-center">
-        <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center text-3xl font-serif">
-          {/* Use first letter of displayName for avatar, fallback if loading/null */}
-          {displayName ? displayName.charAt(0).toUpperCase() : "?"}
-        </div>
+        {/* Use Avatar component */}
+        <Avatar className="w-24 h-24">
+          <AvatarImage src={avatarUrl} alt={displayName || username || "User"} />
+          <AvatarFallback className="text-3xl font-serif">
+            {displayName ? displayName.charAt(0).toUpperCase() : "?"}
+          </AvatarFallback>
+        </Avatar>
 
         <div>
           {/* Display displayName prominently */}
-          <h1 className="mb-1">{displayName || "Loading..."}</h1>
+          <h1 className="mb-1">{displayName}</h1>
           {/* Display username below with @ prefix */}
           <p className="text-sm text-muted-foreground">@{username || "..."}</p>
           {/* Moved Joined date here */}

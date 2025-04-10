@@ -1,13 +1,13 @@
 "use client"
 
-import Link from "next/link"
-import { useState, useEffect, useRef } from "react"
-import { usePathname, useRouter } from "next/navigation"
-import { useAuth } from "@/lib/auth-context"
-import { databases, DATABASES_ID, USER_PROFILES_COLLECTION_ID } from "@/lib/appwrite"
-import { User as UserProfile } from "@/lib/types"
-import { Query } from "appwrite"
-import { Menu, X, Search } from "lucide-react"
+import Link from "next/link";
+import { useState, useEffect, useRef } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth-context";
+import { databases, storage, DATABASES_ID, USER_PROFILES_COLLECTION_ID, PROFILE_PICTURES_BUCKET_ID } from "@/lib/appwrite"; // Added storage and BUCKET_ID
+import { User as UserProfileType } from "@/lib/types"; // Renamed to avoid conflict
+import { Query } from "appwrite";
+import { Menu, X, Search } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
@@ -23,49 +23,72 @@ export default function Header() {
   const pathname = usePathname()
   const { user, logout, loading } = useAuth()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [searchResults, setSearchResults] = useState<UserProfile[]>([])
-  const [isSearching, setIsSearching] = useState(false)
-  const [isResultsOpen, setIsResultsOpen] = useState(false)
-  const [username, setUsername] = useState<string | null>(null)
-  const [displayName, setDisplayName] = useState<string | null>(null)
-  const router = useRouter()
-  const searchContainerRef = useRef<HTMLDivElement>(null)
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState<UserProfileType[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [isResultsOpen, setIsResultsOpen] = useState(false);
+  const [username, setUsername] = useState<string | null>(null);
+  const [displayName, setDisplayName] = useState<string | null>(null);
+  const [avatarFileId, setAvatarFileId] = useState<string | null>(null); // State for avatar file ID
+  const [avatarDisplayUrl, setAvatarDisplayUrl] = useState<string>("/placeholder-user.jpg"); // State for display URL
+  const router = useRouter();
+  const searchContainerRef = useRef<HTMLDivElement>(null);
 
   // Fetch user profile when user changes
   useEffect(() => {
     async function fetchUserProfile() {
       if (!user) {
-        setUsername(null)
-        setDisplayName(null)
-        return
+        setUsername(null);
+        setDisplayName(null);
+        setAvatarFileId(null); // Reset avatar ID on logout
+        return;
       }
-      
+
       try {
         const response = await databases.listDocuments(
           DATABASES_ID,
           USER_PROFILES_COLLECTION_ID,
           [Query.equal("userId", user.$id)]
-        )
-        
+        );
+
         if (response.documents.length > 0) {
-          const userProfile = response.documents[0]
-          setUsername(userProfile.username)
-          setDisplayName(userProfile.displayName || userProfile.username)
+          const userProfile = response.documents[0];
+          setUsername(userProfile.username);
+          setDisplayName(userProfile.displayName || userProfile.username);
+          setAvatarFileId(userProfile.avatarFileId || null); // Fetch avatarFileId
         } else {
-          setUsername(user.$id)
-          setDisplayName(user.$id)
+          // Handle case where profile might not exist yet
+          setUsername(user.$id); // Fallback to user ID
+          setDisplayName(user.$id);
+          setAvatarFileId(null);
         }
       } catch (error) {
         console.error("Error fetching user profile:", error)
-        setUsername(user.$id)
-        setDisplayName(user.$id)
+        setUsername(user.$id);
+        setDisplayName(user.$id);
+        setAvatarFileId(null); // Ensure reset on error
       }
     }
-    
-    fetchUserProfile()
-  }, [user])
+
+    fetchUserProfile();
+  }, [user]);
+
+  // Effect to update avatar display URL when file ID changes
+  useEffect(() => {
+    if (avatarFileId) {
+      try {
+        const url = storage.getFileView(PROFILE_PICTURES_BUCKET_ID, avatarFileId);
+        setAvatarDisplayUrl(url.toString());
+      } catch (error) {
+        console.error("Error getting avatar view URL in header:", error);
+        setAvatarDisplayUrl("/placeholder-user.jpg"); // Fallback on error
+      }
+    } else {
+      setAvatarDisplayUrl("/placeholder-user.jpg"); // Fallback if no file ID
+    }
+  }, [avatarFileId]);
+
 
   // Get user initials for avatar fallback
   const getUserInitials = () => {
@@ -140,7 +163,7 @@ export default function Header() {
                 <DropdownMenuTrigger asChild>
                   <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-red-900 focus:ring-offset-2">
                     <Avatar className="h-9 w-9 cursor-pointer hover:opacity-80 transition-opacity">
-                      <AvatarImage src={user.prefs?.avatarUrl || "/placeholder-user.jpg"} alt={user.name || "User"} />
+                      <AvatarImage src={avatarDisplayUrl} alt={displayName || username || "User"} /> {/* Use avatarDisplayUrl */}
                       <AvatarFallback className="bg-red-900 text-white">{getUserInitials()}</AvatarFallback>
                     </Avatar>
                   </button>
@@ -202,7 +225,7 @@ export default function Header() {
                 <DropdownMenuTrigger asChild>
                   <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-red-900 focus:ring-offset-2">
                     <Avatar className="h-8 w-8 cursor-pointer hover:opacity-80 transition-opacity">
-                      <AvatarImage src={user.prefs?.avatarUrl || "/placeholder-user.jpg"} alt={user.name || "User"} />
+                      <AvatarImage src={avatarDisplayUrl} alt={displayName || username || "User"} /> {/* Use avatarDisplayUrl */}
                       <AvatarFallback className="bg-red-900 text-white text-xs">{getUserInitials()}</AvatarFallback>
                     </Avatar>
                   </button>
